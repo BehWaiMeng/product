@@ -81,6 +81,11 @@
                 if (empty($promotion_price)) {
                     $promotion_price_error = "Please enter product promotion_price";
                 }
+                if (!empty($promotion_price)) {
+                    if ($promotion_price >= $price) {
+                        $promotion_price_error = "Promotion price must be cheaper than original price";
+                    }
+                }
                 if (empty($manufacture_date)) {
                     $manufacture_date_error = "Please enter manufacture_date";
                 }
@@ -94,7 +99,7 @@
                 }
                 //check if the promotion price is cheaper than the original price
                 if ($promotion_price >= $price) {
-                    $promotion_price_error = "Promotion price must be cheaper than orginal price";
+                    $promotion_price_error = "Promotion price must be cheaper than original price";
                 }
 
                 //check if there are any errors
