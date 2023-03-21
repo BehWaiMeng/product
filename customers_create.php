@@ -53,7 +53,7 @@
     <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Create Product</h1>
+            <h1>Create Customers</h1>
         </div>
         <?php
         if ($_POST) {
@@ -61,61 +61,65 @@
             include 'config/database.php';
             try {
                 // posted values
-                $name = htmlspecialchars(strip_tags($_POST['name']));
-                $description = htmlspecialchars(strip_tags($_POST['description']));
-                $price = htmlspecialchars(strip_tags($_POST['price']));
-                $promotion_price = htmlspecialchars(strip_tags($_POST['promotion_price']));
-                $manufacture_date = htmlspecialchars(strip_tags($_POST['manufacture_date']));
-                $expired_date = htmlspecialchars(strip_tags($_POST['expired_date']));
+                $username = htmlspecialchars(strip_tags($_POST['username']));
+                $password = htmlspecialchars(strip_tags($_POST['password']));
+                $fname = htmlspecialchars(strip_tags($_POST['fname']));
+                $lname = htmlspecialchars(strip_tags($_POST['lname']));
+                $gender = htmlspecialchars(strip_tags($_POST['gender']));
+                $dob = htmlspecialchars(strip_tags($_POST['dob']));
+                $registry = htmlspecialchars(strip_tags($_POST['registry']));
+                $status = htmlspecialchars(strip_tags($_POST['status']));
+
 
                 //check if any field is empty
-                if (empty($name)) {
-                    $name_error = "Please enter product name";
+                if (empty($username)) {
+                    $username_error = "Please enter username";
                 }
-                if (empty($description)) {
-                    $description_error = "Please enter product description";
+                if (empty($password)) {
+                    $password_error = "Please enter password";
                 }
-                if (empty($price)) {
-                    $price_error = "Please enter product price";
+                if (empty($fname)) {
+                    $fname_error = "Please enter fname";
                 }
-                if (empty($promotion_price)) {
-                    $promotion_price_error = "Please enter product promotion_price";
+                if (empty($lname)) {
+                    $lname_error = "Please enter lname";
                 }
-                if (empty($manufacture_date)) {
-                    $manufacture_date_error = "Please enter manufacture_date";
+                if (empty($gender)) {
+                    $gender_error = "Please enter gender";
                 }
-                if (empty($expired_date)) {
-                    $expired_date_error = "Please enter expired_date";
+                if (empty($dob)) {
+                    $dob_error = "Please enter dob";
+                }
+                if (empty($registry)) {
+                    $registry_error = "Please enter registry";
+                }
+                if (empty($status)) {
+                    $status_error = "Please select status";
                 }
 
-                //check if expired date is later than manufacture date
-                if (strtotime($expired_date) <= strtotime($manufacture_date)) {
-                    $expired_date_error = "Expired date should be later than manufacture date";
-                }
-                //check if the promotion price is cheaper than the original price
-                if ($promotion_price >= $price) {
-                    $promotion_price_error = "Promotion price must be cheaper than orginal price";
-                }
+
 
                 //check if there are any errors
-                if (!isset($name_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error)) {
+                if (!isset($username_error) && !isset($password_error) && !isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($dob_error) && !isset($registry_error) && !isset($status_error)) {
 
 
 
 
                     // insert query
-                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date , created=:created";
+                    $query = "INSERT INTO customers SET username=:username, password=:password, fname=:fname, lname=:lname, gender=:gender, dob=:dob , registry=:registry, status=:status";
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
 
                     // bind the parameters
-                    $stmt->bindParam(':name', $name);
-                    $stmt->bindParam(':description', $description);
-                    $stmt->bindParam(':price', $price);
-                    $stmt->bindParam(':promotion_price', $promotion_price);
-                    $stmt->bindParam(':manufacture_date', $manufacture_date);
-                    $stmt->bindParam(':expired_date', $expired_date);
+                    $stmt->bindParam(':username', $username);
+                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':fname', $fname);
+                    $stmt->bindParam(':lname', $lname);
+                    $stmt->bindParam(':gender', $gender);
+                    $stmt->bindParam(':dob', $dob);
+                    $stmt->bindParam(':registry', $registry);
+                    $stmt->bindParam(':status', $status);
 
                     // specify when this record was inserted to the database
                     $created = date('Y-m-d H:i:s');
@@ -142,30 +146,39 @@
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
-                    <td>Name</td>
-                    <td><input type='varchar' name='name' class='form-control' /></td>
+                    <td>username</td>
+                    <td><input type='varchar' username='username' class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>Description</td>
-                    <td><textarea name='description' class='form-control'></textarea></td>
+                    <td>password</td>
+                    <td><input type='varchar' password='password' class='form-control' value="<?php echo isset($username) ? htmlspecialchars($username) : ""; ?>" /></td>
                 </tr>
                 <tr>
-                    <td>Price</td>
-                    <td><input type='double' name='price' class='form-control' /></td>
+                    <td>fname</td>
+                    <td><input type='text' name='fname' class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>promotion_price</td>
-                    <td><input type='double' name='promotion_price' class='form-control' /></td>
+                    <td>lname</td>
+                    <td><input type='text' name='lname' class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>manufacture_date</td>
-                    <td><input type='date' name='manufacture_date' class='form-control' /></td>
+                    <td>gender</td>
+                    <td><input type='text' name='gender' class='form-control' /></td>
                 </tr>
                 <tr>
-                    <td>expired_date</td>
-                    <td><input type='date' name='expired_date' class='form-control' /></td>
+                    <td>dob</td>
+                    <td><input type='date' name='dob' class='form-control' /></td>
                 </tr>
                 <tr>
+                    <td>registry</td>
+                    <td><input type='datetime' name='registry' class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td><input type='text' name='status' class='form-control' /></td>
+                </tr>
+                <tr>
+
 
 
                     <td></td>
