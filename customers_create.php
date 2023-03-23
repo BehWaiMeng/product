@@ -168,12 +168,12 @@
                 </tr>
                 <tr>
                     <td>password</td>
-                    <td><input type='varchar' password='password' class='form-control' value="<?php echo isset($password) ? htmlspecialchars($password) : ''; ?>" />
+                    <td><input type='password' password='password' class='form-control' value="<?php echo isset($password) ? htmlspecialchars($password) : ''; ?>" />
                         <?php if (isset($password_error)) { ?><span class="text danger"><?php echo $password_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>confirmpassword</td>
-                    <td><input type='varchar' confirmpassword='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''; ?>" />
+                    <td><input type='password' confirmpassword='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''; ?>" />
                         <?php if (isset($confirmpassword_error)) { ?><span class="text danger"><?php echo $confirmpassword_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
