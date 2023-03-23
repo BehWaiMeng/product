@@ -40,7 +40,7 @@
         <li><a class="active" href="http://localhost/PROJECT/homepage.php">Home</a></li>
         <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
         <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
-        <li><a href="http://localhost/PROJECT/contact.php">Contact
+        <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
     </ul>
 
 
@@ -148,27 +148,34 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>Name</td>
-                    <td><input type='varchar' name='name' class='form-control' /></td>
+                    <td><input type="varchar" name="name" class="form-control" value="<?php echo isset($name) ? htmlspecialchars($name) : ''; ?>" />
+                        <?php if (isset($name_error)) { ?><span class="text danger"><?php echo $name_error; ?></span><?php } ?></<td>
                 </tr>
+
                 <tr>
                     <td>Description</td>
-                    <td><textarea name='description' class='form-control'></textarea></td>
+                    <td><textarea name="description" class="form-control"><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
+                        <?php if (isset($description_error)) { ?><span class="text danger"><?php echo $description_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>Price</td>
-                    <td><input type='double' name='price' class='form-control' /></td>
+                    <td><input type="double" name='price' class='form-control' value="<?php echo isset($price) ? htmlspecialchars($price) : ''; ?>" />
+                        <?php if (isset($price_error)) { ?><span class="text danger"><?php echo $price_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>promotion_price</td>
-                    <td><input type='double' name='promotion_price' class='form-control' /></td>
+                    <td><input type='double' name='promotion_price' class='form-control' value="<?php echo isset($promotion_price) ? htmlspecialchars($promotion_price) : ''; ?>" />
+                        <?php if (isset($promotion_price_error)) { ?><span class="text danger"><?php echo $promotion_price_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>manufacture_date</td>
-                    <td><input type='date' name='manufacture_date' class='form-control' /></td>
+                    <td><input type='date' name='manufacture_date' class='form-control' value="<?php echo isset($manufacture_date) ? htmlspecialchars($manufacture_date) : ''; ?>" />
+                        <?php if (isset($manufacture_date_error)) { ?><span class="text danger"><?php echo $manufacture_date_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>expired_date</td>
-                    <td><input type='date' name='expired_date' class='form-control' /></td>
+                    <td><input type='date' name='expired_date' class='form-control' value="<?php echo isset($expired_date) ? htmlspecialchars($expired_date) : ''; ?>" />
+                        <?php if (isset($expired_date_error)) { ?><span class="text danger"><?php echo $expired_date_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
 

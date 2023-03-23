@@ -31,6 +31,10 @@
         li a:hover {
             background-color: #111;
         }
+
+        .text-danger {
+            color: red;
+        }
     </style>
 </head>
 
@@ -40,11 +44,8 @@
         <li><a class="active" href="http://localhost/PROJECT/homepage.php">Home</a></li>
         <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
         <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
-        <li><a href="http://localhost/PROJECT/contact.php">Contact
+        <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
     </ul>
-
-
-
 
     <!-- Latest compiled and minified Bootstrap CSS (Apply your Bootstrap here -->
     </head>
@@ -61,23 +62,34 @@
             include 'config/database.php';
             try {
                 // posted values
-                $username = htmlspecialchars(strip_tags($_POST['username']));
-                $password = htmlspecialchars(strip_tags($_POST['password']));
-                $fname = htmlspecialchars(strip_tags($_POST['fname']));
-                $lname = htmlspecialchars(strip_tags($_POST['lname']));
-                $gender = htmlspecialchars(strip_tags($_POST['gender']));
-                $dob = htmlspecialchars(strip_tags($_POST['dob']));
-                $registry = htmlspecialchars(strip_tags($_POST['registry']));
-                $status = htmlspecialchars(strip_tags($_POST['status']));
+                $username = htmlspecialchars(strip_tags($_POST['username'] ?? ''));
+                $password = htmlspecialchars(strip_tags($_POST['password'] ?? ''));
+                $confirmpassword = htmlspecialchars(strip_tags($_POST['confirmpassword'] ?? ''));
+                $fname = htmlspecialchars(strip_tags($_POST['fname'] ?? ''));
+                $lname = htmlspecialchars(strip_tags($_POST['lname'] ?? ''));
+                $gender = htmlspecialchars(strip_tags($_POST['gender'] ?? ''));
+                $dob = htmlspecialchars(strip_tags($_POST['dob'] ?? ''));
+                $status = htmlspecialchars(strip_tags($_POST['status'] ?? ''));
 
-
-                //check if any field is empty
+                // check if any field is empty
                 if (empty($username)) {
                     $username_error = "Please enter username";
+                } elseif (strlen($username) < 6) {
+                    $username_error = "The username must be at least 6s characters";
                 }
                 if (empty($password)) {
                     $password_error = "Please enter password";
+                } elseif (strlen($password) < 8) {
+                    $password_error = "The password must be at least 8 characters";
                 }
+
+                if (empty($confirmpassword)) {
+                    $confirmpassword_error = "Please enter confirm password";
+                } elseif (isset($confirmpassword) && ($password) != ($confimrpassword)) {
+                    $password_error = "The password doest no match.";
+                }
+
+
                 if (empty($fname)) {
                     $fname_error = "Please enter fname";
                 }
@@ -90,23 +102,26 @@
                 if (empty($dob)) {
                     $dob_error = "Please enter dob";
                 }
-                if (empty($registry)) {
-                    $registry_error = "Please enter registry";
-                }
+
                 if (empty($status)) {
                     $status_error = "Please select status";
+                }
+
+                //password need at least 6 characters
+                if (strlen($password) < 6) {
+                    $passwordnumber_error = "Need atleast 6 characters";
                 }
 
 
 
                 //check if there are any errors
-                if (!isset($username_error) && !isset($password_error) && !isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($dob_error) && !isset($registry_error) && !isset($status_error)) {
+                if (!isset($username_error) && !isset($password_error) && !isset($confirmpassword_error) && !isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($dob_error) && !isset($status_error)) {
 
 
 
 
                     // insert query
-                    $query = "INSERT INTO customers SET username=:username, password=:password, fname=:fname, lname=:lname, gender=:gender, dob=:dob , registry=:registry, status=:status";
+                    $query = "INSERT INTO customers SET username=:username, password=:password, confirmpassword=:confirmpassword, fname=:fname, lname=:lname, gender=:gender, dob=:dob , registry=:registry, status=:status";
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
@@ -114,6 +129,7 @@
                     // bind the parameters
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':confirmpassword', $confirmpassword);
                     $stmt->bindParam(':fname', $fname);
                     $stmt->bindParam(':lname', $lname);
                     $stmt->bindParam(':gender', $gender);
@@ -147,35 +163,58 @@
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>username</td>
-                    <td><input type='varchar' username='username' class='form-control' /></td>
+                    <td><input type='varchar' username='username' class='form-control' value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>" />
+                        <?php if (isset($username_error)) { ?><span class="text danger"><?php echo $username_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>password</td>
-                    <td><input type='varchar' password='password' class='form-control' value="<?php echo isset($username) ? htmlspecialchars($username) : ""; ?>" /></td>
+                    <td><input type='varchar' password='password' class='form-control' value="<?php echo isset($password) ? htmlspecialchars($password) : ''; ?>" />
+                        <?php if (isset($password_error)) { ?><span class="text danger"><?php echo $password_error; ?></span><?php } ?></<td>
+                </tr>
+                <tr>
+                    <td>confirmpassword</td>
+                    <td><input type='varchar' confirmpassword='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''; ?>" />
+                        <?php if (isset($confirmpassword_error)) { ?><span class="text danger"><?php echo $confirmpassword_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>fname</td>
-                    <td><input type='text' name='fname' class='form-control' /></td>
+                    <td><input type='text' name='fname' class='form-control' value="<?php echo isset($fname) ? htmlspecialchars($fname) : ''; ?>" />
+                        <?php if (isset($fname_error)) { ?><span class="text danger"><?php echo $fname_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>lname</td>
-                    <td><input type='text' name='lname' class='form-control' /></td>
+                    <td><input type='text' name='lname' class='form-control' value="<?php echo isset($lname) ? htmlspecialchars($lname) : ''; ?>" />
+                        <?php if (isset($lname_error)) { ?><span class="text danger"><?php echo $lname_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>gender</td>
-                    <td><input type='text' name='gender' class='form-control' /></td>
+                    <td>
+                        <select name="gender" class="form-control">
+                            <option value="">Select Gender</option>
+                            <option value="male" <?php if (isset($gender) && $gender == "male") echo "selected"; ?>>Male</option>
+                            <option value="female" <?php if (isset($gender) && $gender == "female") echo "selected"; ?>>Female</option>
+                            </selected>
+                            <?php
+                            if (isset($gender_error)) { ?><span class="text danger"><?php echo $gender_error; ?></span>
+                            <?php } ?>
+                            </<td>
+                <tr>
+                    <td>date of birth</td>
+                    <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
+                        <?php if (isset($dob_error)) { ?><span class="text danger"><?php echo $dob_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
-                    <td>dob</td>
-                    <td><input type='date' name='dob' class='form-control' /></td>
-                </tr>
-                <tr>
-                    <td>registry</td>
-                    <td><input type='datetime' name='registry' class='form-control' /></td>
-                </tr>
-                <tr>
+
                     <td>status</td>
-                    <td><input type='text' name='status' class='form-control' /></td>
+                    <td><select name="status" class="form-control">
+                            <option value="">Select Status</option>
+                            <option value="Active" <?php if (isset($status) && $status == "active") echo "selected"; ?>>Active</option>
+                            <option value="Inactive" <?php if (isset($status) && $status == "inactive") echo "selected"; ?>>Inactive</option>
+                            </selected>
+                            <?php
+                            if (isset($status_error)) { ?><span class="text danger"><?php echo $status_error; ?></span>
+                            <?php } ?>
+                            </<td>
                 </tr>
                 <tr>
 
