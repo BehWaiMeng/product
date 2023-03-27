@@ -64,9 +64,9 @@
                 $name = htmlspecialchars(strip_tags($_POST['name']));
                 $description = htmlspecialchars(strip_tags($_POST['description']));
                 $price = htmlspecialchars(strip_tags($_POST['price']));
-                $promotion_price = htmlspecialchars(strip_tags($_POST['promotion_price']));
+                $promotion_price = isset($_POST['promotion_price']) ? htmlspecialchars(strip_tags($_POST['promotion_price'])) : null;
                 $manufacture_date = htmlspecialchars(strip_tags($_POST['manufacture_date']));
-                $expired_date = htmlspecialchars(strip_tags($_POST['expired_date']));
+                $expired_date = isset($_POST['expired_date']) ? htmlspecialchars(strip_tags($_POST['expired_date'])) : null;
 
                 //check if any field is empty
                 if (empty($name)) {
@@ -78,29 +78,17 @@
                 if (empty($price)) {
                     $price_error = "Please enter product price";
                 }
-                if (empty($promotion_price)) {
-                    $promotion_price_error = "Please enter product promotion_price";
-                }
-                if (!empty($promotion_price)) {
-                    if ($promotion_price >= $price) {
-                        $promotion_price_error = "Promotion price must be cheaper than original price";
-                    }
+                if (!empty($promotion_price) && $promotion_price >= $price) {
+                    $promotion_price_error = "Promotion price must be cheaper than original price";
                 }
                 if (empty($manufacture_date)) {
                     $manufacture_date_error = "Please enter manufacture_date";
                 }
-                if (empty($expired_date)) {
-                    $expired_date_error = "Please enter expired_date";
-                }
-
                 //check if expired date is later than manufacture date
-                if (strtotime($expired_date) <= strtotime($manufacture_date)) {
+                if (!empty($expired_date) && strtotime($expired_date) <= strtotime($manufacture_date)) {
                     $expired_date_error = "Expired date should be later than manufacture date";
                 }
-                //check if the promotion price is cheaper than the original price
-                if ($promotion_price >= $price) {
-                    $promotion_price_error = "Promotion price must be cheaper than original price";
-                }
+
 
                 //check if there are any errors
                 if (!isset($name_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error)) {
@@ -132,6 +120,8 @@
                     } else {
                         echo "<div class='alert alert-danger'>Unable to save record.</div>";
                     }
+                } else {
+                    echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
                 }
             }
             // show error
@@ -149,33 +139,33 @@
                 <tr>
                     <td>Name</td>
                     <td><input type="varchar" name="name" class="form-control" value="<?php echo isset($name) ? htmlspecialchars($name) : ''; ?>" />
-                        <?php if (isset($name_error)) { ?><span class="text danger"><?php echo $name_error; ?></span><?php } ?></<td>
+                        <?php if (isset($name_error)) { ?><span class="text-danger"><?php echo $name_error; ?></span><?php } ?></<td>
                 </tr>
 
                 <tr>
                     <td>Description</td>
                     <td><textarea name="description" class="form-control"><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
-                        <?php if (isset($description_error)) { ?><span class="text danger"><?php echo $description_error; ?></span><?php } ?></<td>
+                        <?php if (isset($description_error)) { ?><span class="text-danger"><?php echo $description_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>Price</td>
                     <td><input type="double" name='price' class='form-control' value="<?php echo isset($price) ? htmlspecialchars($price) : ''; ?>" />
-                        <?php if (isset($price_error)) { ?><span class="text danger"><?php echo $price_error; ?></span><?php } ?></<td>
+                        <?php if (isset($price_error)) { ?><span class="text-danger"><?php echo $price_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>promotion_price</td>
                     <td><input type='double' name='promotion_price' class='form-control' value="<?php echo isset($promotion_price) ? htmlspecialchars($promotion_price) : ''; ?>" />
-                        <?php if (isset($promotion_price_error)) { ?><span class="text danger"><?php echo $promotion_price_error; ?></span><?php } ?></<td>
+                        <?php if (isset($promotion_price_error)) { ?><span class="text-danger"><?php echo $promotion_price_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>manufacture_date</td>
                     <td><input type='date' name='manufacture_date' class='form-control' value="<?php echo isset($manufacture_date) ? htmlspecialchars($manufacture_date) : ''; ?>" />
-                        <?php if (isset($manufacture_date_error)) { ?><span class="text danger"><?php echo $manufacture_date_error; ?></span><?php } ?></<td>
+                        <?php if (isset($manufacture_date_error)) { ?><span class="text-danger"><?php echo $manufacture_date_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
                     <td>expired_date</td>
                     <td><input type='date' name='expired_date' class='form-control' value="<?php echo isset($expired_date) ? htmlspecialchars($expired_date) : ''; ?>" />
-                        <?php if (isset($expired_date_error)) { ?><span class="text danger"><?php echo $expired_date_error; ?></span><?php } ?></<td>
+                        <?php if (isset($expired_date_error)) { ?><span class="text-danger"><?php echo $expired_date_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
 

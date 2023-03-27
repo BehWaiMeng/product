@@ -129,7 +129,6 @@
                     // bind the parameters
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':password', $password);
-                    $stmt->bindParam(':confirmpassword', $confirmpassword);
                     $stmt->bindParam(':fname', $fname);
                     $stmt->bindParam(':lname', $lname);
                     $stmt->bindParam(':gender', $gender);
