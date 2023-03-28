@@ -80,7 +80,7 @@
                 if (empty($password)) {
                     $password_error = "Please enter password";
                 } elseif (strlen($password) < 6) {
-                    $password_error = "The password must be at least 8 characters";
+                    $password_error = "The password must be at least 6s characters";
                 }
 
                 if (empty($confirmpassword)) {
