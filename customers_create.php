@@ -83,9 +83,7 @@
                     $password_error = "Please enter password";
                 } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $password) || preg_match('/\s/', $password)) {
                     $password_error = "The password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
-                }
-
-                if (empty($confirmpassword)) {
+                } elseif (empty($confirmpassword)) {
                     $confirmpassword_error = "Please enter confirm password";
                 } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $confirmpassword) || preg_match('/\s/', $confirmpassword)) {
                     $confirmpassword_error = "The confirm password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
