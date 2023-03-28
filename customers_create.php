@@ -75,18 +75,22 @@
                 if (empty($username)) {
                     $username_error = "Please enter username";
                 } elseif (strlen($username) < 6) {
-                    $username_error = "The username must be at least 6s characters";
+                    $username_error = "The username must be at least 6 characters";
+                } elseif (strpos($username, ' ') !== false) {
+                    $username_error = "The username cannot contain spaces";
                 }
                 if (empty($password)) {
                     $password_error = "Please enter password";
-                } elseif (strlen($password) < 6) {
-                    $password_error = "The password must be at least 6s characters";
+                } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $password) || preg_match('/\s/', $password)) {
+                    $password_error = "The password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
                 }
 
                 if (empty($confirmpassword)) {
                     $confirmpassword_error = "Please enter confirm password";
+                } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $confirmpassword) || preg_match('/\s/', $confirmpassword)) {
+                    $confirmpassword_error = "The confirm password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
                 } elseif ($password != $confirmpassword) {
-                    $confirmpassword_error = "The password doest no match.";
+                    $confirmpassword_error = "The password does not match.";
                 }
 
 
