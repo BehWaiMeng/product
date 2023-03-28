@@ -191,32 +191,23 @@
                 <tr>
                     <td>gender</td>
                     <td>
-                        <select name="gender" class="form-control">
-                            <option value="">Select Gender</option>
-                            <option value="male" <?php if (isset($gender) && $gender == "male") echo "selected"; ?>>Male</option>
-                            <option value="female" <?php if (isset($gender) && $gender == "female") echo "selected"; ?>>Female</option>
-                            </selected>
-                            <?php
-                            if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span>
-                            <?php } ?>
-                            </<td>
+                        <input type="radio" name="gender" value="male" <?php if (isset($gender) && $gender == "male") echo "checked"; ?>> Male
+                        <input type="radio" name="gender" value="female" <?php if (isset($gender) && $gender == "female") echo "checked"; ?>> Female
+                        <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
+                    </td>
+                </tr>
                 <tr>
                     <td>date of birth</td>
                     <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
                         <?php if (isset($dob_error)) { ?><span class="text-danger"><?php echo $dob_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
-
                     <td>status</td>
-                    <td><select name="status" class="form-control">
-                            <option value="">Select Status</option>
-                            <option value="Active" <?php if (isset($status) && $status == "active") echo "selected"; ?>>Active</option>
-                            <option value="Inactive" <?php if (isset($status) && $status == "inactive") echo "selected"; ?>>Inactive</option>
-                            </selected>
-                            <?php
-                            if (isset($status_error)) { ?><span class="text-danger"><?php echo $status_error; ?></span>
-                            <?php } ?>
-                            </<td>
+                    <td>
+                        <input type="radio" name="status" value="Active" <?php if (isset($status) && $status == "Active") echo "checked"; ?>> Active
+                        <input type="radio" name="status" value="Inactive" <?php if (isset($status) && $status == "Inactive") echo "checked"; ?>> Inactive
+                        <?php if (isset($status_error)) { ?><span class="text-danger"><?php echo $status_error; ?></span><?php } ?>
+                    </td>
                 </tr>
                 <tr>
 
