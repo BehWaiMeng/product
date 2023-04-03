@@ -40,7 +40,7 @@
 
 <body>
     <!--navbar-->
-    <!--navbar-->
+
     <ul>
         <li><a class="active" href="http://localhost/PROJECT/index.php">Home</a></li>
         <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
