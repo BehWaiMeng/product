@@ -5,6 +5,32 @@
     <title>PDO - Read One Record - PHP CRUD Tutorial</title>
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,10 +42,9 @@
         <li><a href="http://localhost/PROJECT/product_read_one.php?id=1">Read One Product</a></li>
         <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
         <li><a href="http://localhost/PROJECT/customer_read.php">Read All Customers</a></li>
-        <li><a href="http://localhost/PROJECT/customer_read_one.php">Read One Customers</a></li>
+        <li><a href="http://localhost/PROJECT/customer_read_one.php?username=Jeffbeh111122222">Read One Customers</a></li>
         <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
     </ul>
-
     <!-- container -->
     <div class="container">
         <div class="page-header">

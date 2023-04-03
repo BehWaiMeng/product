@@ -42,27 +42,44 @@
 
 <body>
     <?php
-    //include database connection
+    // include database connection
     include 'config/database.php';
 
+    // Initialize the error message variable
+    $msg = '';
 
     if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['password'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        // Query to check if the username and password match in the database
-        $query = "SELECT * FROM customers WHERE username='$username' AND password='$password'";
+        // Query to check if the username/email and password match in the database
+        $query = "SELECT * FROM customers WHERE username=:username  AND Password=:password";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':username', $username);
+
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $num_rows = $stmt->rowCount();
+
+        if ($num_rows == 1) {
+            // Redirect to home.php
+            header("Location: home.php");
+            exit;
+        } else {
+            $msg = "Username or password is incorrect.";
+        }
     }
     ?>
 
     <div class="login-form">
         <h2>Login</h2>
-        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+        <form action="index.php" method="post">
             <div class="form-group">
                 <input type="text" class="form-control" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" name="Password" placeholder="Password" required>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
             <button type="submit" name="login" class="btn btn-primary btn-block">Log in</button>
             <?php if (!empty($msg)) { ?>
