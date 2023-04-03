@@ -9,6 +9,17 @@
 
 <body>
 
+    <ul>
+        <li><a class="active" href="http://localhost/PROJECT/index.php">Home</a></li>
+        <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
+        <li><a href="http://localhost/PROJECT/product_read.php">Read All Product</a></li>
+        <li><a href="http://localhost/PROJECT/product_read_one.php?id=1">Read One Product</a></li>
+        <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
+        <li><a href="http://localhost/PROJECT/customer_read.php">Read All Customers</a></li>
+        <li><a href="http://localhost/PROJECT/customer_read_one.php">Read One Customers</a></li>
+        <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
+    </ul>
+
     <!-- container -->
     <div class="container">
         <div class="page-header">

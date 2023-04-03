@@ -35,19 +35,20 @@
 </head>
 
 <body>
-    <!--navbar-->
     <ul>
-        <li><a class="active" href="http://localhost/PROJECT/homepage.php">Home</a></li>
+        <li><a class="active" href="http://localhost/PROJECT/index.php">Home</a></li>
         <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
+        <li><a href="http://localhost/PROJECT/product_read.php">Read All Product</a></li>
+        <li><a href="http://localhost/PROJECT/product_read_one.php?id=1">Read One Product</a></li>
         <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
+        <li><a href="http://localhost/PROJECT/customer_read.php">Read All Customers</a></li>
+        <li><a href="http://localhost/PROJECT/customer_read_one.php">Read One Customers</a></li>
         <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
     </ul>
 
 
 
-
     <!-- Latest compiled and minified Bootstrap CSS (Apply your Bootstrap here -->
-    </head>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
     <!-- container -->
