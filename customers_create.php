@@ -63,13 +63,13 @@
             try {
                 // posted values
                 $username = htmlspecialchars(strip_tags($_POST['username'] ?? ''));
-                $password = htmlspecialchars(strip_tags($_POST['password'] ?? ''));
+                $Password = htmlspecialchars(strip_tags($_POST['Password'] ?? ''));
                 $confirmpassword = htmlspecialchars(strip_tags($_POST['confirmpassword'] ?? ''));
                 $fname = htmlspecialchars(strip_tags($_POST['fname'] ?? ''));
                 $lname = htmlspecialchars(strip_tags($_POST['lname'] ?? ''));
-                $gender = htmlspecialchars(strip_tags($_POST['gender'] ?? ''));
+                if (isset($_POST['gender'])) $gender = $_POST['gender'];
                 $dob = htmlspecialchars(strip_tags($_POST['dob'] ?? ''));
-                $status = htmlspecialchars(strip_tags($_POST['status'] ?? ''));
+                if (isset($_POST['status'])) $status = $_POST['status'];
 
                 // check if any field is empty
                 if (empty($username)) {
@@ -79,15 +79,15 @@
                 } elseif (strpos($username, ' ') !== false) {
                     $username_error = "The username cannot contain spaces";
                 }
-                if (empty($password)) {
-                    $password_error = "Please enter password";
-                } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $password) || preg_match('/\s/', $password)) {
+                if (empty($Password)) {
+                    $password_error = "Please enter Password";
+                } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $Password) || preg_match('/\s/', $Password)) {
                     $password_error = "The password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
                 } elseif (empty($confirmpassword)) {
                     $confirmpassword_error = "Please enter confirm password";
                 } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $confirmpassword) || preg_match('/\s/', $confirmpassword)) {
                     $confirmpassword_error = "The confirm password must contain at least 6 characters with at least 1 number and 1 alphabet and should not contain spaces";
-                } elseif ($password != $confirmpassword) {
+                } elseif ($Password != $confirmpassword) {
                     $confirmpassword_error = "The password does not match.";
                 }
 
@@ -121,14 +121,14 @@
 
 
                     // insert query
-                    $query = "INSERT INTO customers SET username=:username, password=:password, confirmpassword=:confirmpassword, fname=:fname, lname=:lname, gender=:gender, dob=:dob, status=:status, created=:created";
+                    $query = "INSERT INTO customers SET username=:username, Password=:Password, fname=:fname, lname=:lname, gender=:gender, dob=:dob, status=:status, created=:created";
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
 
                     // bind the parameters
                     $stmt->bindParam(':username', $username);
-                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':Password', $Password);
                     $stmt->bindParam(':fname', $fname);
                     $stmt->bindParam(':lname', $lname);
                     $stmt->bindParam(':gender', $gender);
@@ -167,8 +167,8 @@
                         <?php if (isset($username_error)) { ?><span class="text-danger"><?php echo $username_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
-                    <td>password</td>
-                    <td><input type='password' name='password' class='form-control' value="<?php echo isset($password) ? htmlspecialchars($password) : ''; ?>" />
+                    <td>Password</td>
+                    <td><input type='password' name='Password' class='form-control' value="<?php echo isset($Password) ? htmlspecialchars($Password) : ''; ?>" />
                         <?php if (isset($password_error)) { ?><span class="text-danger"><?php echo $password_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>

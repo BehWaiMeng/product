@@ -12,26 +12,27 @@
     <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Read Product</h1>
+            <h1>Read Customers</h1>
         </div>
 
         <!-- PHP read one record will be here -->
         <?php
         // get passed parameter value, in this case, the record ID
         // isset() is a PHP function used to verify if a value is there or not
-        $id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
+        $username = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record Username not found.');
 
         //include database connection
         include 'config/database.php';
 
         // read current record's data
+        // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, name, description, price, promotion_price, manufacture_date, expired_date FROM products WHERE id = ? LIMIT 0,1";
+            $query = "SELECT * FROM customers WHERE username = ? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this is the first question mark
-            $stmt->bindParam(1, $id);
+            $stmt->bindParam(1, $username);
 
             // execute our query
             $stmt->execute();
@@ -39,13 +40,18 @@
             // store retrieved row to a variable
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            if (!$row) {
+                die('ERROR: Record not found.');
+            }
+
             // values to fill up our form
-            $name = $row['name'];
-            $description = $row['description'];
-            $price = $row['price'];
-            $promotion_price = $row['promotion_price'];
-            $manufacture_date = $row['manufacture_date'];
-            $expired_date = $row['expired_date'];
+            $username = $row['username'];
+            $Password = $row['Password'];
+            $fname = $row['fname'];
+            $lname = $row['lname'];
+            $gender = $row['gender'];
+            $dob = $row['dob'];
+            $status = $row['status'];
         }
 
         // show error
@@ -60,29 +66,35 @@
         <!--we have our html table here where the record will be displayed-->
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
-                <td>Name</td>
-                <td><?php echo htmlspecialchars($name, ENT_QUOTES);  ?></td>
+                <td>username</td>
+                <td><?php echo htmlspecialchars($username, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>Description</td>
-                <td><?php echo htmlspecialchars($description, ENT_QUOTES);  ?></td>
+                <td>Password</td>
+                <td><?php echo htmlspecialchars($Password, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>Price</td>
-                <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
+                <td>fname</td>
+                <td><?php echo htmlspecialchars($fname, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>promotion_price</td>
-                <td><?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?></td>
+                <td>lname</td>
+                <td><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>manufacture_date</td>
-                <td><?php echo htmlspecialchars($manufacture_date, ENT_QUOTES);  ?></td>
+                <td>gender</td>
+                <td><?php echo htmlspecialchars($gender, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>expired_date</td>
-                <td><?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?></td>
+                <td>dob</td>
+                <td><?php echo htmlspecialchars($dob, ENT_QUOTES);  ?></td>
             </tr>
+            <tr>
+                <td>status</td>
+                <td><?php echo htmlspecialchars($status, ENT_QUOTES);  ?></td>
+            </tr>
+
+
 
             <tr>
                 <td></td>
