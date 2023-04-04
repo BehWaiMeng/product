@@ -68,6 +68,8 @@
         } else {
             $msg = "Username or password is incorrect or account is inactive.";
         }
+    } else {
+        $msg = "Please fill up the empty space.";
     }
 
     ?>
