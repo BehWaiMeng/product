@@ -60,7 +60,7 @@
         //include database connection
         include 'config/database.php';
 
-        // read current record's data
+
         // read current record's data
         try {
             // prepare select query
@@ -75,6 +75,7 @@
 
             // store retrieved row to a variable
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
             if (!$row) {
                 die('ERROR: Record not found.');
