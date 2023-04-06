@@ -36,14 +36,14 @@
 <body>
 
     <ul>
-        <li><a class="active" href="http://localhost/PROJECT/index.php">Home</a></li>
-        <li><a href="http://localhost/PROJECT/product_create.php">Create Product</a></li>
-        <li><a href="http://localhost/PROJECT/product_read.php">Read All Product</a></li>
-        <li><a href="http://localhost/PROJECT/product_read_one.php?id=1">Read One Product</a></li>
-        <li><a href="http://localhost/PROJECT/customers_create.php">Create Customers</a></li>
-        <li><a href="http://localhost/PROJECT/customer_read.php">Read All Customers</a></li>
-        <li><a href="http://localhost/PROJECT/customer_read_one.php?username=Jeffbeh111122222">Read One Customers</a></li>
-        <li><a href="http://localhost/PROJECT/contact.php">Contact</a></li>
+        <li><a class="active" href="index.php">Home</a></li>
+        <li><a href="product_create.php">Create Product</a></li>
+        <li><a href="product_read.php">Read All Product</a></li>
+        <li><a href="product_read_one.php">Read One Product</a></li>
+        <li><a href="customers_create.php">Create Customers</a></li>
+        <li><a href="customer_read.php">Read All Customers</a></li>
+        <li><a href="customer_read_one.php">Read One Customers</a></li>
+        <li><a href="contact.php">Contact</a></li>
     </ul>
     <!-- container -->
     <div class="container">
@@ -53,9 +53,11 @@
 
         <!-- PHP read one record will be here -->
         <?php
+
+
         // get passed parameter value, in this case, the record ID
         // isset() is a PHP function used to verify if a value is there or not
-        $username = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record Username not found.');
+        $username = isset($POST['username']) ? $POST['username'] : die('ERROR: Record Username not found.');
 
         //include database connection
         include 'config/database.php';
@@ -64,7 +66,7 @@
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT * FROM customers WHERE username = ? LIMIT 0,1";
+            $query = "SELECT * FROM customers WHERE username =? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this is the first question mark

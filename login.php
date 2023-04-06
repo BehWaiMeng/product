@@ -1,95 +1,96 @@
+<?php
+// Initialize the error message variables
+$username_error = '';
+$password_error = '';
+$msg = '';
+
+// Check if the form was submitted
+if (isset($_POST['login'])) {
+    // Get the username and password from the form
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+    // Check if username is empty
+    if (empty($username)) {
+        $username_error = "Please enter username";
+    }
+
+    // Check if password is empty
+    if (empty($password)) {
+        $password_error = "Please enter password";
+    }
+
+    // If there are no errors, try to login
+    if (empty($username_error) && empty($password_error)) {
+        // Hash the password using md5()
+        $password_hashed = md5($password);
+
+        // Database configuration
+        $host = 'localhost';
+        $username = 'behwaimeng';
+        $password = '5201314beh@';
+        $dbname = 'behwaimeng';
+
+        // Create a database connection
+        $con = mysqli_connect($localhost, $username, $password, $dbname);
+
+        // Check connection
+        if (mysqli_connect_errno()) {
+            die("Failed to connect to MySQL: " . mysqli_connect_error());
+        }
+
+        // Query to check if the username and password match in the database
+        $query = "SELECT * FROM customers WHERE username=? AND password=?";
+        $stmt = mysqli_prepare($con, $query);
+        mysqli_stmt_bind_param($stmt, "ss", $username, $password_hashed);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+        $num_rows = mysqli_stmt_num_rows($stmt);
+
+        // Check if username and password match in the database
+        if ($num_rows == 1) {
+            // Login successful, redirect to home page or do something else
+            header("Location: index.php");
+            exit();
+        } else {
+            // Display an error message
+            $msg = "Wrong username or password.";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
     <title>Login Form</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #17a2b8;
-        }
-
-        .login-form {
-            width: 340px;
-            margin: 50px auto;
-            font-size: 15px;
-            background-color: #fff;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
-        }
-
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-control,
-        .btn {
-            min-height: 38px;
-            border-radius: 2px;
-        }
-
-        .btn {
-            font-size: 15px;
-            font-weight: bold;
-        }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 
 <body>
-    <?php
-    // include database connection
-    include 'config/database.php';
-
-    // Initialize the error message variable
-    $msg = '';
-
-    if (isset($_POST['login']) && !empty($_POST['username']) && !empty($_POST['password'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-
-        // Query to check if the username and password match in the database and status is active
-        $query = "SELECT * FROM customers WHERE username=:username  AND Password=:password AND status='active'";
-        $stmt = $con->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $num_rows = $stmt->rowCount();
-
-        if ($num_rows == 1) {
-            // Redirect to index.php
-            header("Location: index.php");
-            exit;
-        } else {
-            $msg = "Username or password is incorrect or account is inactive.";
-        }
-    } else {
-        $msg = "Please fill up the empty space.";
-    }
-
-    ?>
-
-    <div class="login-form">
-        <h2>Login</h2>
-        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
-            <div class="form-group">
-                <input type="text" class="form-control" name="username" placeholder="Username" required>
+    <div class="container">
+        <h2 class="text-center">Login</h2>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form action="" method="post">
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" class="form-control" name="username" required>
+                        <?php if (!empty($username_error)) echo '<p class="text-danger">' . $username_error . '</p>'; ?>
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" class="form-control" name="password" required>
+                        <?php if (!empty($password_error)) echo '<p class="text-danger">' . $password_error . '</p>'; ?>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" name="login" value="Login">
+                    </div>
+                    <?php if (!empty($msg)) echo '<p class="text-danger">' . $msg . '</p>'; ?>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password" required>
-            </div>
-            <button type="submit" name="login" class="btn btn-primary btn-block">Log in</button>
-            <?php if (!empty($msg)) { ?>
-                <div class="alert alert-danger mt-3"><?php echo $msg; ?></div>
-            <?php } ?>
-        </form>
+        </div>
     </div>
-
-</body>
-
-</html>
+    <!-- jQuery and Bootstrap JS -->
