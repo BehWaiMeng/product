@@ -69,6 +69,8 @@
             </div>
 
             <?php
+            // ...
+
             if ($_POST) {
                 // include database connection
                 include 'config/database.php';
@@ -88,29 +90,31 @@
 
                     if (!isset($username_error) && !isset($password_error)) {
                         // check if the username exists
-                        $query = "SELECT * FROM customers WHERE username = :username AND status = 'active'";
+                        $query = "SELECT * FROM customers WHERE username = :username";
                         $stmt = $con->prepare($query);
                         $stmt->bindParam(':username', $username);
                         $stmt->execute();
                         $num = $stmt->rowCount();
 
                         if ($num == 1) {
-                            // check if the password is correct
-                            $query = "SELECT * FROM customers WHERE username = :username AND password = :password AND status = 'active'";
-                            $stmt = $con->prepare($query);
-                            $stmt->bindParam(':username', $username);
-                            $stmt->bindParam(':password', $password);
-                            $stmt->execute();
-                            $num = $stmt->rowCount();
+                            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $hashed_password = md5($password);
 
-                            if ($num == 1) {
-                                // if one row is returned, login was successful
-                                echo "<div class='alert alert-success'>Login successful.</div>";
-                                header("Location: index.php");
-                                exit;
+                            // check if the account status is active
+                            if ($row['status'] == 'Active') {
+                                // check if the password is correct
+                                if ($row['Password'] == $hashed_password) {
+                                    // if one row is returned, login was successful
+                                    echo "<div class='alert alert-success'>Login successful.</div>";
+                                    header("Location: index.php");
+                                    exit;
+                                } else {
+                                    // if the password is incorrect
+                                    echo "<div class='alert alert-danger'>Incorrect password. Please try again.</div>";
+                                }
                             } else {
-                                // if zero rows are returned, the password is incorrect
-                                echo "<div class='alert alert-danger'>Incorrect password. Please try again.</div>";
+                                // if the account status is inactive
+                                echo "<div class='alert alert-danger'>Your account is inactive. Please contact the administrator.</div>";
                             }
                         } else {
                             // if zero rows are returned, the username doesn't exist
@@ -121,6 +125,9 @@
                     die('ERROR: ' . $exception->getMessage());
                 }
             }
+
+            // ...
+
 
             ?>
 
