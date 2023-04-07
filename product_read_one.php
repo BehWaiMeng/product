@@ -43,10 +43,8 @@
         <li><a class="active" href="index.php">Home</a></li>
         <li><a href="product_create.php">Create Product</a></li>
         <li><a href="product_read.php">Read All Product</a></li>
-        <li><a href="product_read_one.php">Read One Product</a></li>
         <li><a href="customers_create.php">Create Customers</a></li>
         <li><a href="customer_read.php">Read All Customers</a></li>
-        <li><a href="customer_read_one.php">Read One Customers</a></li>
         <li><a href="contact.php">Contact</a></li>
     </ul>
 

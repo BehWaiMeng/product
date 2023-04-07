@@ -42,13 +42,10 @@
         <li><a class="active" href="index.php">Home</a></li>
         <li><a href="product_create.php">Create Product</a></li>
         <li><a href="product_read.php">Read All Product</a></li>
-        <li><a href="product_read_one.php">Read One Product</a></li>
         <li><a href="customers_create.php">Create Customers</a></li>
         <li><a href="customer_read.php">Read All Customers</a></li>
-        <li><a href="customer_read_one.php">Read One Customers</a></li>
         <li><a href="contact.php">Contact</a></li>
     </ul>
-
     <!-- container -->
     <div class="container">
         <div class="page-header">
@@ -71,7 +68,7 @@
         $num = $stmt->rowCount();
 
         // link to create record form
-        echo "<a href='customer_create.php' class='btn btn-primary m-b-1em'>Create New Customer</a>";
+        echo "<a href='customers_create.php' class='btn btn-primary m-b-1em'>Create New Customer</a>";
 
         //check if more than 0 record found
         if ($num > 0) {

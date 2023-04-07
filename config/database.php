@@ -10,7 +10,7 @@ try {
     echo "";
 }
 
-// show error
+// show errors
 catch (PDOException $exception) {
     echo "Connection error: " . $exception->getMessage();
 }
