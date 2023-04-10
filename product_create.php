@@ -24,20 +24,20 @@
         </div>
 
         <?php
-        if ($_POST) {
-            // include database connection
-            include 'config/database.php';
+        // include database connection
+        include 'config/database.php';
 
-            // Add the following code after the `include 'config/database.php';` line
-            // Get all categories
-            $query = "SELECT * FROM categories";
-            try {
-                $stmt = $con->prepare($query);
-                $stmt->execute();
-                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-            }
+        // Get all categories
+        $query = "SELECT * FROM categories";
+        try {
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+
+        if ($_POST) {
 
 
 
@@ -77,7 +77,7 @@
                 if (!empty($expired_date) && strtotime($expired_date) <= strtotime($manufacture_date)) {
                     $expired_date_error = "Expired date should be later than manufacture date";
                 }
-                if (empty($category_id)) {
+                if (empty($category_name)) {
                     $category_error = "Please select a category";
                 }
 
@@ -91,6 +91,7 @@
 
                     // insert query
                     $query = "INSERT INTO products SET name=:name, description=:description, price=:price, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date , category_id=:category_id, created=:created";
+
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
@@ -164,14 +165,21 @@
                 <tr>
                     <td>Category</td>
                     <td>
-                        <select id="products" name="products">
-                            <option values="$category_id">$category_name</option>
+                        <select id="category_id" name="category_id" class="form-control">
 
+                            <?php
+                            if (!empty($categories)) {
+                                foreach ($categories as $category) {
+                                    $selected = isset($category_name) && $category_name == $category['id'] ? 'selected' : '';
+                                    echo "<option value='{$category['category_id']}' {$selected}>{$category['category_name']}</option>";
+                                }
+                            }
+                            ?>
                         </select>
-
-
+                        <?php if (isset($category_error)) { ?><span class="text-danger"><?php echo $category_error; ?></span><?php } ?>
                     </td>
                 </tr>
+
                 <tr>
 
 
