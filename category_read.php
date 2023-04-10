@@ -65,10 +65,11 @@
 
                 echo "<td>";
                 // read one record
-                echo "<a href='product_read_one.php?id={$category_id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='category_read_one.php?category_id={$category_id}' class='btn btn-info m-r-1em'>Read</a>";
+
 
                 // we will use this links on next part of this post
-                echo "<a href='update.php?id={$category_id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='update.php?category_id={$category_id}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
