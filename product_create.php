@@ -77,7 +77,7 @@
                 if (!empty($expired_date) && strtotime($expired_date) <= strtotime($manufacture_date)) {
                     $expired_date_error = "Expired date should be later than manufacture date";
                 }
-                if (empty($category_name)) {
+                if (empty($category_id)) {
                     $category_error = "Please select a category";
                 }
 
