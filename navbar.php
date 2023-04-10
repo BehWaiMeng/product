@@ -35,7 +35,7 @@
     <li><a href="customers_create.php">Create Customers</a></li>
     <li><a href="customer_read.php">Read All Customers</a></li>
     <li><a href="contact.php">Contact</a></li>
-    <li><a href="category.php">Categories</a></li>
+    <li><a href="category_read.php">Categories</a></li>
 </ul>
 </ul>
 

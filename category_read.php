@@ -16,7 +16,7 @@
     <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Read Categories</h1>
+            <h1>Read All Categories</h1>
         </div>
 
         <!-- PHP code to read records will be here -->
@@ -27,7 +27,7 @@
         // delete message prompt will be here
 
         // select all data
-        $query = "SELECT * FROM products";
+        $query = "SELECT * FROM categories";
         $stmt = $con->prepare($query);
         $stmt->execute();
 
@@ -48,7 +48,6 @@
             echo "<th>category_name</th>";
             echo "<th>category_id</th>";
             echo "<th>description</th>";
-
             echo "</tr>";
 
             // table body will be here
@@ -66,13 +65,13 @@
 
                 echo "<td>";
                 // read one record
-                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='product_read_one.php?id={$category_id}' class='btn btn-info m-r-1em'>Read</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='update.php?id={$category_id}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
+                echo "<a href='#' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }

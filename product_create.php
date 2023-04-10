@@ -55,11 +55,7 @@
                 $category_id = htmlspecialchars(strip_tags($_POST['category_id']));
 
 
-                // query to select all categories
-                $category_query = "SELECT * FROM categories";
-                $category_stmt = $con->prepare($category_query);
-                $category_stmt->execute();
-                $categories = $category_stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
                 //check if any field is empty
                 if (empty($name)) {
@@ -88,7 +84,7 @@
 
 
                 //check if there are any errors
-                if (!isset($name_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error) && !isset($expired_date_error)) {
+                if (!isset($name_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error) && !isset($expired_date_error) && !isset($category_error)) {
 
 
 
@@ -168,17 +164,12 @@
                 <tr>
                     <td>Category</td>
                     <td>
-                        <?php if (is_array($categories)) : ?>
-                            <?php foreach ($categories as $category) : ?>
-                                <div class="form-check">
-                                    <input type="radio" name="category_id" class="form-check-input" value="<?php echo $category['id']; ?>" <?php echo (isset($category_id) && $category_id == $category['id']) ? 'checked' : ''; ?>>
-                                    <label class="form-check-label">
-                                        <?php echo htmlspecialchars($category['name']); ?>
-                                    </label>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                        <?php if (isset($category_error)) { ?><span class="text-danger"><?php echo $category_error; ?></span><?php } ?>
+                        <select id="products" name="products">
+                            <option values="$category_id">$category_name</option>
+
+                        </select>
+
+
                     </td>
                 </tr>
                 <tr>
