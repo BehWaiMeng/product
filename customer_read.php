@@ -6,46 +6,11 @@
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <style>
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-        }
-
-        li {
-            float: left;
-        }
-
-        li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        li a:hover {
-            background-color: #111;
-        }
-
-        .text-danger {
-            color: red;
-        }
-    </style>
 </head>
 
 <body>
-    <ul>
-        <li><a class="active" href="index.php">Home</a></li>
-        <li><a href="product_create.php">Create Product</a></li>
-        <li><a href="product_read.php">Read All Product</a></li>
-        <li><a href="customers_create.php">Create Customers</a></li>
-        <li><a href="customer_read.php">Read All Customers</a></li>
-        <li><a href="contact.php">Contact</a></li>
-    </ul>
+
+    <?php include 'navbar.php'; ?>
     <!-- container -->
     <div class="container">
         <div class="page-header">
