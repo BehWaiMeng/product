@@ -11,7 +11,13 @@
 
 <body>
     <!--navbar-->
-    <?php include 'navbar.php'; ?>
+    <?php
+    //check if it login or not
+    session_start();
+    if (!isset($_SESSION["user"])) {
+        header("Location: login.php");
+    }
+    include 'navbar.php'; ?>
 
     <!-- container -->
     <div class="container">

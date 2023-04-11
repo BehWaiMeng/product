@@ -11,7 +11,13 @@
 </head>
 
 <body>
-    <?php include 'navbar.php'; ?>
+    <?php
+    //check if it login or not
+    session_start();
+    if (!isset($_SESSION["user"])) {
+        header("Location: login.php");
+    }
+    include 'navbar.php'; ?>
 
 
     <!-- Latest compiled and minified Bootstrap CSS (Apply your Bootstrap here -->
@@ -38,11 +44,6 @@
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
             }
-
-
-
-
-
 
             try {
                 // posted values

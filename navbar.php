@@ -36,10 +36,7 @@
     <li><a href="customer_read.php">Read All Customers</a></li>
     <li><a href="contact.php">Contact</a></li>
     <li><a href="category_read.php">Categories</a></li>
-    <li><a href="logout.php" class="nav-link">Logout</a></li>
+    <li><a href="logout.php">Logout</a></li>
 </ul>
-</ul>
-
-
 
 </html>

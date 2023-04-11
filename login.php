@@ -61,6 +61,13 @@
 </head>
 
 <body>
+    <?php
+    session_start();
+    if (isset($_SESSION["user"])) {
+        header("Location: index.php");
+    }
+
+    ?>
 
     <div class="container login-container">
         <div class="login-form">
@@ -106,6 +113,7 @@
                                 if ($row['Password'] == $hashed_password) {
                                     // if one row is returned, login was successful
                                     echo "<div class='alert alert-success'>Login successful.</div>";
+                                    $_SESSION["user"] = $username;
                                     header("Location: index.php");
                                     exit;
                                 } else {
