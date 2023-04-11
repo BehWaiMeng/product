@@ -46,13 +46,11 @@
 
             try {
                 // posted values
-                $name = htmlspecialchars(strip_tags($_POST['name']));
-                $description = htmlspecialchars(strip_tags($_POST['description']));
-                $price = htmlspecialchars(strip_tags($_POST['price']));
-                $promotion_price = isset($_POST['promotion_price']) ? htmlspecialchars(strip_tags($_POST['promotion_price'])) : null;
-                $manufacture_date = htmlspecialchars(strip_tags($_POST['manufacture_date']));
-                $expired_date = isset($_POST['expired_date']) ? htmlspecialchars(strip_tags($_POST['expired_date'])) : null;
+
                 $category_id = htmlspecialchars(strip_tags($_POST['category_id']));
+                $category_name = htmlspecialchars(strip_tags($_POST['category_name']));
+                $description = htmlspecialchars(strip_tags($_POST['description']));
+
 
 
                 // query to select all categories
@@ -62,54 +60,39 @@
                 $categories = $category_stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 //check if any field is empty
-                if (empty($name)) {
-                    $name_error = "Please enter product name";
-                }
-                if (empty($description)) {
-                    $description_error = "Please enter product description";
-                }
-                if (empty($price)) {
-                    $price_error = "Please enter product price";
-                }
-                if (!empty($promotion_price) && $promotion_price >= $price) {
-                    $promotion_price_error = "Promotion price must be cheaper than original price";
-                }
-                if (empty($manufacture_date)) {
-                    $manufacture_date_error = "Please enter manufacture_date";
-                }
-                //check if expired date is later than manufacture date
-                if (!empty($expired_date) && strtotime($expired_date) <= strtotime($manufacture_date)) {
-                    $expired_date_error = "Expired date should be later than manufacture date";
-                }
                 if (empty($category_id)) {
-                    $category_error = "Please select a category";
+                    $category_id_error = "Please fill the category id";
                 }
+                if (empty($category_name)) {
+                    $category_name_error = "Please fill the category name";
+                }
+
+                if (empty($description)) {
+                    $description_error = "Please fill the description";
+                }
+
 
 
 
                 //check if there are any errors
-                if (!isset($name_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error) && !isset($expired_date_error)) {
+                if (!isset($category_id_error) && !isset($category_name_error) && !isset($description_error)) {
 
 
 
 
                     // insert query
-                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date , category_id=:category_id, created=:created";
+                    $query = "INSERT INTO categories SET category_id=:category_id, category_name=:category_name, description=:description";
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
 
                     // bind the parameters
-                    $stmt->bindParam(':name', $name);
-                    $stmt->bindParam(':description', $description);
-                    $stmt->bindParam(':price', $price);
-                    $stmt->bindParam(':promotion_price', $promotion_price);
-                    $stmt->bindParam(':manufacture_date', $manufacture_date);
-                    $stmt->bindParam(':expired_date', $expired_date);
+
                     $stmt->bindParam(':category_id', $category_id);
-                    // specify when this record was inserted to the database
-                    $created = date('Y-m-d H:i:s');
-                    $stmt->bindParam(':created', $created);
+                    $stmt->bindParam(':category_name', $category_name);
+
+                    $stmt->bindParam(':description', $description);
+
 
                     // Execute the query
                     if ($stmt->execute()) {
@@ -134,53 +117,23 @@
         <!-- html form here where the product information will be entered -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <table class='table table-hover table-responsive table-bordered'>
-                <tr>
-                    <td>Name</td>
-                    <td><input type="varchar" name="name" class="form-control" value="<?php echo isset($name) ? htmlspecialchars($name) : ''; ?>" />
-                        <?php if (isset($name_error)) { ?><span class="text-danger"><?php echo $name_error; ?></span><?php } ?></<td>
-                </tr>
 
                 <tr>
-                    <td>Description</td>
-                    <td><textarea name="description" class="form-control"><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
+                    <td>category_id</td>
+                    <td><input type='int' name='category_id' class='form-control' value="<?php echo isset($category_id) ? htmlspecialchars($category_id) : ''; ?>" />
+                        <?php if (isset($category_id_error)) { ?><span class="text-danger"><?php echo $category_id_error; ?></span><?php } ?></<td>
+                </tr>
+                <tr>
+                    <td>category_name</td>
+                    <td><input type='varchar' name='category_name' class='form-control' value="<?php echo isset($category_name) ? htmlspecialchars($category_name) : ''; ?>" />
+                        <?php if (isset($category_name_error)) { ?><span class="text-danger"><?php echo $category_name_error; ?></span><?php } ?></<td>
+                </tr>
+                <tr>
+                    <td>description</td>
+                    <td><input type='text' name='description' class='form-control' value="<?php echo isset($description) ? htmlspecialchars($description) : ''; ?>" />
                         <?php if (isset($description_error)) { ?><span class="text-danger"><?php echo $description_error; ?></span><?php } ?></<td>
                 </tr>
-                <tr>
-                    <td>Price</td>
-                    <td><input type="double" name='price' class='form-control' value="<?php echo isset($price) ? htmlspecialchars($price) : ''; ?>" />
-                        <?php if (isset($price_error)) { ?><span class="text-danger"><?php echo $price_error; ?></span><?php } ?></<td>
-                </tr>
-                <tr>
-                    <td>promotion_price</td>
-                    <td><input type='double' name='promotion_price' class='form-control' value="<?php echo isset($promotion_price) ? htmlspecialchars($promotion_price) : ''; ?>" />
-                        <?php if (isset($promotion_price_error)) { ?><span class="text-danger"><?php echo $promotion_price_error; ?></span><?php } ?></<td>
-                </tr>
-                <tr>
-                    <td>manufacture_date</td>
-                    <td><input type='date' name='manufacture_date' class='form-control' value="<?php echo isset($manufacture_date) ? htmlspecialchars($manufacture_date) : ''; ?>" />
-                        <?php if (isset($manufacture_date_error)) { ?><span class="text-danger"><?php echo $manufacture_date_error; ?></span><?php } ?></<td>
-                </tr>
-                <tr>
-                    <td>expired_date</td>
-                    <td><input type='date' name='expired_date' class='form-control' value="<?php echo isset($expired_date) ? htmlspecialchars($expired_date) : ''; ?>" />
-                        <?php if (isset($expired_date_error)) { ?><span class="text-danger"><?php echo $expired_date_error; ?></span><?php } ?></<td>
-                </tr>
-                <tr>
-                    <td>Category</td>
-                    <td>
-                        <?php if (is_array($categories)) : ?>
-                            <?php foreach ($categories as $category) : ?>
-                                <div class="form-check">
-                                    <input type="radio" name="category_id" class="form-check-input" value="<?php echo $category['id']; ?>" <?php echo (isset($category_id) && $category_id == $category['id']) ? 'checked' : ''; ?>>
-                                    <label class="form-check-label">
-                                        <?php echo htmlspecialchars($category['name']); ?>
-                                    </label>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                        <?php if (isset($category_error)) { ?><span class="text-danger"><?php echo $category_error; ?></span><?php } ?>
-                    </td>
-                </tr>
+
                 <tr>
 
 
