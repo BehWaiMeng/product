@@ -13,7 +13,13 @@
 </head>
 
 <body>
-    <?php include 'navbar.php'; ?>
+    <?php
+    session_start();
+    if (!isset($_SESSION["user"])) {
+        header("Location: login.php");
+    }
+
+    include 'navbar.php'; ?>
 
 
 
@@ -24,6 +30,7 @@
         </div>
 
         <?php
+
         // include database connection
         include 'config/database.php';
 
