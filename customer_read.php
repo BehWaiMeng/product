@@ -54,12 +54,8 @@
             //creating our table heading
             echo "<tr>";
             echo "<th>username</th>";
-            echo "<th>Password</th>";
-            echo "<th>fname</th>";
-            echo "<th>lname</th>";
             echo "<th>gender</th>";
             echo "<th>dob</th>";
-            echo "<th>status</th>";
             echo "</tr>";
 
             // table body will be here
@@ -71,12 +67,8 @@
                 // creating new table row per record
                 echo "<tr>";
                 echo "<td>{$username}</td>";
-                echo "<td>{$Password}</td>";
-                echo "<td>{$fname}</td>";
-                echo "<td>{$lname}</td>";
                 echo "<td>{$gender}</td>";
                 echo "<td>{$dob}</td>";
-                echo "<td>{$status}</td>";
 
                 echo "<td>";
                 // read one record

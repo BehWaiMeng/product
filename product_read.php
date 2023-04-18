@@ -66,7 +66,6 @@
             // data from database will be here
             echo "<table class='table table-hover table-responsive table-bordered'>"; //start table
 
-
             //creating our table heading
             echo "<tr>";
             echo "<th>ID</th>";
@@ -87,7 +86,8 @@
                 echo "<td>{$id}</td>";
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
-                echo "<td>{$price}</td>";
+                echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
+
                 echo "<td>";
 
                 // read one record

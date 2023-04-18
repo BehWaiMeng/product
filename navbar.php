@@ -94,21 +94,21 @@
             <a class="dropbtn">Products</a>
             <div class="dropdown-content">
                 <a href="product_create.php">Create Product</a>
-                <a href="product_read.php">Read All Products</a>
+                <a href="product_read.php">Read Products</a>
             </div>
         </li>
         <li class="dropdown">
-            <a class="dropbtn">Customer</a>
+            <a class="dropbtn">Customers</a>
             <div class="dropdown-content">
                 <a href="customers_create.php">Create Customers</a>
-                <a href="customer_read.php">Read All Customers</a>
+                <a href="customer_read.php">Read Customers</a>
             </div>
         </li>
         <li class="dropdown">
             <a class="dropbtn">Categories</a>
             <div class="dropdown-content">
                 <a href="category_create.php">Create Category</a>
-                <a href="category_read.php">Read All Categories</a>
+                <a href="category_read.php">Read Categories</a>
             </div>
         </li>
         <li><a href="contact.php">Contact</a></li>

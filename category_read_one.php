@@ -53,7 +53,7 @@
             echo "<th>Product Name</th>";
             echo "<th>Description</th>";
             echo "<th>Price</th>";
-            echo "<th>Category ID</th>";
+
             echo "</tr>";
 
             // loop through the products and display them
@@ -64,7 +64,7 @@
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td>{$price}</td>";
-                echo "<td>{$category_id}</td>";
+
                 echo "</tr>";
             }
             echo "</table>";
@@ -73,7 +73,7 @@
         }
         ?>
 
-        <a href='index.php' class='btn btn-danger'>Back to read categories</a>
+        <a href='category_read.php' class='btn btn-danger'>Back to read categories</a>
 
     </div> <!-- end .container -->
 

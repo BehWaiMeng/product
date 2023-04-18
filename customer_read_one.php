@@ -65,7 +65,7 @@
             }
             // values to fill up our form
             $username1 = $row['username'];
-            $Password = $row['Password'];
+
             $fname = $row['fname'];
             $lname = $row['lname'];
             $gender = $row['gender'];
@@ -90,24 +90,21 @@
                 <td>username</td>
                 <td><?php echo htmlspecialchars($username1, ENT_QUOTES);  ?></td>
             </tr>
+
             <tr>
-                <td>Password</td>
-                <td><?php echo htmlspecialchars($Password, ENT_QUOTES);  ?></td>
-            </tr>
-            <tr>
-                <td>fname</td>
+                <td>Firstname</td>
                 <td><?php echo htmlspecialchars($fname, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>lname</td>
+                <td>Lastname</td>
                 <td><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>gender</td>
+                <td>Gender</td>
                 <td><?php echo htmlspecialchars($gender, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
-                <td>dob</td>
+                <td>Date of birth</td>
                 <td><?php echo htmlspecialchars($dob, ENT_QUOTES);  ?></td>
             </tr>
             <tr>
@@ -120,7 +117,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='customer_read.php' class='btn btn-danger'>Back to read products</a>
                 </td>
             </tr>
         </table>

@@ -86,18 +86,23 @@
                 <td>Price</td>
                 <td><?php echo htmlspecialchars($price, ENT_QUOTES);  ?></td>
             </tr>
+            <?php if ($promotion_price != 0) : ?>
+                <tr>
+                    <td>promotion_price</td>
+                    <td><?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
-                <td>promotion_price</td>
-                <td><?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?></td>
-            </tr>
             <tr>
                 <td>manufacture_date</td>
                 <td><?php echo htmlspecialchars($manufacture_date, ENT_QUOTES);  ?></td>
             </tr>
-            <tr>
-                <td>expired_date</td>
-                <td><?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?></td>
-            </tr>
+            <?php if ($expired_date != '0000-00-00') : ?>
+                <tr>
+                    <td>expired_date</td>
+                    <td><?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <td>category_id</td>
                 <td><?php echo htmlspecialchars($category_id, ENT_QUOTES);  ?></td>
@@ -106,7 +111,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='product_read.php' class='btn btn-danger'>Back to read products</a>
                 </td>
             </tr>
         </table>
