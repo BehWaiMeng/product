@@ -18,6 +18,7 @@
     //check if it login or not
     session_start();
     if (!isset($_SESSION["user"])) {
+        $_SESSION["warning"] = "You must be logged in to access this page.";
         header("Location: login.php");
     }
 
