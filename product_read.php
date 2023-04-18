@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
-
-
 </head>
 
 <body>
@@ -28,6 +26,18 @@
             <h1>Read Products</h1>
         </div>
 
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>
+            </div>
+            <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="search" placeholder="Search Product Name" aria-label="Search" style="max-width: 300px;">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+
         <!-- PHP code to read records will be here -->
         <?php
         // include database connection
@@ -37,20 +47,25 @@
 
         // select all data
         $query = "SELECT * FROM products";
+
+        // check if search parameter is present in the URL
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $search_term = htmlspecialchars(strip_tags($_GET['search']));
+            $query .= " WHERE name LIKE '%" . $search_term . "%'";
+        }
+
         $stmt = $con->prepare($query);
         $stmt->execute();
 
         // this is how to get number of rows returned
         $num = $stmt->rowCount();
 
-        // link to create record form
-        echo "<a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
-
         //check if more than 0 record found
         if ($num > 0) {
 
             // data from database will be here
             echo "<table class='table table-hover table-responsive table-bordered'>"; //start table
+
 
             //creating our table heading
             echo "<tr>";
@@ -73,8 +88,8 @@
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td>{$price}</td>";
-
                 echo "<td>";
+
                 // read one record
                 echo "<a href='product_read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
 

@@ -42,6 +42,7 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            left: 0;
         }
 
         .dropdown-content a {
@@ -50,6 +51,7 @@
             text-decoration: none;
             display: block;
             transition: background-color 0.3s ease;
+            text-align: left;
         }
 
         .dropdown-content a:hover {
@@ -114,4 +116,4 @@
     </ul>
 </body>
 
-</html>
+</html
