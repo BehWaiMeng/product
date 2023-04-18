@@ -63,11 +63,13 @@
 <body>
     <?php
     session_start();
-    if (isset($_SESSION["user"])) {
-        header("Location: index.php");
+    if (isset($_SESSION["warning"])) {
+        echo "<div class='alert alert-warning'>" . $_SESSION["warning"] . "</div>";
+        unset($_SESSION["warning"]);
     }
 
     ?>
+
 
     <div class="container login-container">
         <div class="login-form">
