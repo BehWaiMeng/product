@@ -6,9 +6,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
-
-
 </head>
 
 <body>
@@ -21,20 +18,42 @@
         header("Location: login.php");
     }
     include 'navbar.php'; ?>
+
     <!-- container -->
     <div class="container">
+
+        <?php
+        // include database connection
+        include 'config/database.php';
+        // get passed parameter value, in this case, the category_id
+        $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : die('ERROR: Record category_id not found.');
+
+        // Fetch the category name
+        $category_name = "";
+        try {
+            $query = "SELECT category_name FROM categories WHERE category_id = ?";
+            $stmt = $con->prepare($query);
+
+            // bind the category_id
+            $stmt->bindParam(1, $category_id);
+
+            // execute the query
+            $stmt->execute();
+
+            // Fetch the category_name
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_name = $row['category_name'];
+        } catch (PDOException $exception) {
+            die('ERROR: ' . $exception->getMessage());
+        }
+        ?>
+
         <div class="page-header">
-            <h1>Read Products by Category</h1>
+            <h1>Read Products in <?php echo htmlspecialchars($category_name, ENT_QUOTES); ?> Category</h1>
         </div>
 
         <!-- PHP read products by category will be here -->
         <?php
-        // get passed parameter value, in this case, the category_id
-        $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : die('ERROR: Record category_id not found.');
-
-        //include database connection
-        include 'config/database.php';
-
         // read products by category_id
         try {
             $query = "SELECT * FROM products WHERE category_id = ?";

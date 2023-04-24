@@ -156,12 +156,12 @@
                         <?php if (isset($confirmpassword_error)) { ?><span class="text-danger"><?php echo $confirmpassword_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
-                    <td>fname</td>
+                    <td>firstname</td>
                     <td><input type='text' name='fname' class='form-control' value="<?php echo isset($fname) ? htmlspecialchars($fname) : ''; ?>" />
                         <?php if (isset($fname_error)) { ?><span class="text-danger"><?php echo $fname_error; ?></span><?php } ?></<td>
                 </tr>
                 <tr>
-                    <td>lname</td>
+                    <td>lastname</td>
                     <td><input type='text' name='lname' class='form-control' value="<?php echo isset($lname) ? htmlspecialchars($lname) : ''; ?>" />
                         <?php if (isset($lname_error)) { ?><span class="text-danger"><?php echo $lname_error; ?></span><?php } ?></<td>
                 </tr>

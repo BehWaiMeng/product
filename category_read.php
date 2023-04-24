@@ -54,9 +54,9 @@
 
             //creating our table heading
             echo "<tr>";
-            echo "<th>category_name</th>";
-            echo "<th>category_id</th>";
-            echo "<th>description</th>";
+            echo "<th>Category name</th>";
+            echo "<th>Category id</th>";
+            echo "<th>Description</th>";
             echo "</tr>";
 
             // table body will be here

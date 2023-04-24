@@ -111,6 +111,13 @@
                 <a href="category_read.php">Read Categories</a>
             </div>
         </li>
+        <li class="dropdown">
+            <a class="dropbtn">Orders</a>
+            <div class="dropdown-content">
+                <a href="order_create.php">Create Order</a>
+                <a href="order_read.php">Read Order</a>
+            </div>
+        </li>
         <li><a href="contact.php">Contact</a></li>
         <li><a href="logout.php">Logout</a></li>
     </ul>

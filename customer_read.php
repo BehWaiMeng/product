@@ -7,24 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
-
-
 </head>
 
 <body>
-
+    <!--navbar-->
     <?php
-    //check if it login or not
     session_start();
     if (!isset($_SESSION["user"])) {
         $_SESSION["warning"] = "You must be logged in to access this page.";
         header("Location: login.php");
     }
+
     include 'navbar.php'; ?>
+
     <!-- container -->
     <div class="container">
         <div class="page-header">
             <h1>Read Customers</h1>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a href='customers_create.php' class='btn btn-primary m-b-1em'>Create New Customer</a>
+            </div>
+            <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="search" placeholder="Search Customer Name" aria-label="Search" style="max-width: 300px;">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </form>
         </div>
 
         <!-- PHP code to read records will be here -->
@@ -36,14 +47,18 @@
 
         // select all data
         $query = "SELECT * FROM customers";
+
+        // check if search parameter is present in the URL
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $search_term = htmlspecialchars(strip_tags($_GET['search']));
+            $query .= " WHERE username LIKE '%" . $search_term . "%'";
+        }
+
         $stmt = $con->prepare($query);
         $stmt->execute();
 
-        // this is how to get the number of rows returned
+        // this is how to get number of rows returned
         $num = $stmt->rowCount();
-
-        // link to create record form
-        echo "<a href='customers_create.php' class='btn btn-primary m-b-1em'>Create New Customer</a>";
 
         //check if more than 0 record found
         if ($num > 0) {
@@ -55,7 +70,7 @@
             echo "<tr>";
             echo "<th>username</th>";
             echo "<th>gender</th>";
-            echo "<th>dob</th>";
+            echo "<th>dateofbirth</th>";
             echo "</tr>";
 
             // table body will be here
