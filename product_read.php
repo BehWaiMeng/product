@@ -45,13 +45,21 @@
 
         // delete message prompt will be here
 
-        // select all data
-        $query = "SELECT * FROM products";
+        // get total number of products
+        $query = "SELECT COUNT(*) as total FROM products";
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $total_products = $row['total'];
+
+        echo "<h4>Total Products: " . $total_products . "</h4>";
 
         // check if search parameter is present in the URL
         if (isset($_GET['search']) && !empty($_GET['search'])) {
             $search_term = htmlspecialchars(strip_tags($_GET['search']));
-            $query .= " WHERE name LIKE '%" . $search_term . "%'";
+            $query = "SELECT * FROM products WHERE name LIKE '%" . $search_term . "%'";
+        } else {
+            $query = "SELECT * FROM products";
         }
 
         $stmt = $con->prepare($query);
@@ -87,7 +95,6 @@
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
-
                 echo "<td>";
 
                 // read one record
@@ -102,8 +109,6 @@
                 echo "</tr>";
             }
 
-
-
             // end table
             echo "</table>";
         }
@@ -113,12 +118,20 @@
         }
         ?>
 
-
     </div> <!-- end .container -->
 
     <!-- confirm delete record will be here -->
 
-
+    <script>
+        function delete_user(id) {
+            var answer = confirm('Are you sure?');
+            if (answer) {
+                // if user clicked ok,
+                // pass the ID to delete.php and execute the delete query
+                window.location = 'delete.php?id=' + id;
+            }
+        }
+    </script>
 </body>
 
 </html>
