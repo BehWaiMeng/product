@@ -38,7 +38,7 @@
         include 'config/database.php';
 
         // Get all categories
-        $query = "SELECT * FROM categories";
+        $query = "SELECT * FROM orders";
         try {
             $stmt = $con->prepare($query);
             $stmt->execute();
@@ -50,21 +50,18 @@
         if ($_POST) {
 
 
+
             try {
                 // posted values
                 $order_no = htmlspecialchars(strip_tags($_POST['order_no']));
-                $order_date = htmlspecialchars(strip_tags($_POST['order_date']));
                 $customer_name = htmlspecialchars(strip_tags($_POST['customer_name']));
-
 
 
                 //check if any field is empty
                 if (empty($order_no)) {
                     $order_no_error = "Please enter order number";
                 }
-                if (empty($order_date)) {
-                    $order_date_error = "Please enter product description";
-                }
+
                 if (empty($customer_name)) {
                     $customer_name_error = "Please enter customer name";
                 }
@@ -72,39 +69,42 @@
 
 
 
+
                 //check if there are any errors
-                if (!isset($order_no_error) && !isset($description_error) && !isset($price_error) && !isset($promotion_price_error) && !isset($manufacture_date_error) && !isset($expired_date_error) && !isset($expired_date_error) && !isset($category_error)) {
-
-
-
-
-                    // insert query
-                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date , category_id=:category_id, created=:created";
-
-
-                    // prepare query for execution
+                if (!isset($order_no_error) && !isset($customer_name_error)) {
+                    // check if order_no already exists
+                    $query = "SELECT COUNT(*) as count FROM orders WHERE order_no=:order_no";
                     $stmt = $con->prepare($query);
+                    $stmt->bindParam(':order_no', $order_no);
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    // bind the parameters
-                    $stmt->bindParam(':name', $name);
-                    $stmt->bindParam(':description', $description);
-                    $stmt->bindParam(':price', $price);
-                    $stmt->bindParam(':promotion_price', $promotion_price);
-                    $stmt->bindParam(':manufacture_date', $manufacture_date);
-                    $stmt->bindParam(':expired_date', $expired_date);
-                    $stmt->bindParam(':category_id', $category_id);
-                    // specify when this record was inserted to the database
-                    $created = date('Y-m-d H:i:s');
-                    $stmt->bindParam(':created', $created);
-
-                    // Execute the query
-                    if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Record was saved.</div>";
+                    if ($row['count'] > 0) {
+                        // order_no already exists
+                        echo "<div class='alert alert-danger'>The order number already exists. Please enter a unique order number.</div>";
                     } else {
-                        echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                        // insert query
+                        $query = "INSERT INTO orders SET order_no=:order_no, order_date=:order_date, customer_name=:customer_name";
+
+                        // prepare query for execution
+                        $stmt = $con->prepare($query);
+
+                        // bind the parameters
+                        $stmt->bindParam(':order_no', $order_no);
+                        $stmt->bindParam(':customer_name', $customer_name);
+                        // specify when this record was inserted to the database
+                        $order_date = date('Y-m-d H:i:s');
+                        $stmt->bindParam(':order_date', $order_date);
+
+                        // Execute the query
+                        if ($stmt->execute()) {
+                            echo "<div class='alert alert-success'>Record was saved.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'>Unable to save record.</div>";
+                        }
                     }
                 } else {
-                    echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
+                    echo "<div class='alert alert-danger'>Please fill up all the empty places.</div>";
                 }
             }
             // show error
@@ -121,54 +121,29 @@
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
-                    <td>Name</td>
-                    <td><input type="varchar" name="name" class="form-control" value="<?php echo isset($name) ? htmlspecialchars($name) : ''; ?>" />
-                        <?php if (isset($name_error)) { ?><span class="text-danger"><?php echo $name_error; ?></span><?php } ?></<td>
-                </tr>
-
-                <tr>
-                    <td>Description</td>
-                    <td><textarea name="description" class="form-control"><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
-                        <?php if (isset($description_error)) { ?><span class="text-danger"><?php echo $description_error; ?></span><?php } ?></<td>
+                    <td>Order ID</td>
+                    <td><input type="text" name="order_no" class="form-control" value="<?php echo isset($order_no) ? htmlspecialchars($order_no) : ''; ?>" /></td>
                 </tr>
                 <tr>
-                    <td>Price</td>
-                    <td><input type="double" name='price' class='form-control' value="<?php echo isset($price) ? htmlspecialchars($price) : ''; ?>" />
-                        <?php if (isset($price_error)) { ?><span class="text-danger"><?php echo $price_error; ?></span><?php } ?></<td>
+                    <td>Customer Name</td>
+                    <td><input type="text" name='customer_name' class='form-control' value="<?php echo isset($customer_name) ? htmlspecialchars($customer_name) : ''; ?>" />
+                        <?php if (isset($customer_name_error)) { ?><span class="text-danger"><?php echo $customer_name_error; ?></span><?php } ?></td>
                 </tr>
                 <tr>
-                    <td>promotion_price</td>
-                    <td><input type='double' name='promotion_price' class='form-control' value="<?php echo isset($promotion_price) ? htmlspecialchars($promotion_price) : ''; ?>" />
-                        <?php if (isset($promotion_price_error)) { ?><span class="text-danger"><?php echo $promotion_price_error; ?></span><?php } ?></<td>
+                    <td>Product 1</td>
+                    <td><input type="text" name="product1" class="form-control" /></td>
+                    <td><input type="number" name="product1_quantity" class="form-control" min="1" /></td>
                 </tr>
                 <tr>
-                    <td>manufacture_date</td>
-                    <td><input type='date' name='manufacture_date' class='form-control' value="<?php echo isset($manufacture_date) ? htmlspecialchars($manufacture_date) : ''; ?>" />
-                        <?php if (isset($manufacture_date_error)) { ?><span class="text-danger"><?php echo $manufacture_date_error; ?></span><?php } ?></<td>
+                    <td>Product 2</td>
+                    <td><input type="text" name="product2" class="form-control" /></td>
+                    <td><input type="number" name="product2_quantity" class="form-control" min="1" /></td>
                 </tr>
                 <tr>
-                    <td>expired_date</td>
-                    <td><input type='date' name='expired_date' class='form-control' value="<?php echo isset($expired_date) ? htmlspecialchars($expired_date) : ''; ?>" />
-                        <?php if (isset($expired_date_error)) { ?><span class="text-danger"><?php echo $expired_date_error; ?></span><?php } ?></<td>
+                    <td>Product 3</td>
+                    <td><input type="text" name="product3" class="form-control" /></td>
+                    <td><input type="number" name="product3_quantity" class="form-control" min="1" /></td>
                 </tr>
-                <tr>
-                    <td>Category</td>
-                    <td>
-                        <select id="category_id" name="category_id" class="form-control">
-
-                            <?php
-                            if (!empty($categories)) {
-                                foreach ($categories as $category) {
-                                    $selected = isset($category_name) && $category_name == $category['id'] ? 'selected' : '';
-                                    echo "<option value='{$category['category_id']}' {$selected}>{$category['category_name']}</option>";
-                                }
-                            }
-                            ?>
-                        </select>
-                        <?php if (isset($category_error)) { ?><span class="text-danger"><?php echo $category_error; ?></span><?php } ?>
-                    </td>
-                </tr>
-
                 <tr>
                     <td></td>
                     <td>
@@ -179,8 +154,7 @@
             </table>
         </form>
 
-    </div>
-    <!-- end .container -->
+        <!-- end .container -->
 
 </body>
 

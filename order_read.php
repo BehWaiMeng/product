@@ -2,11 +2,10 @@
 <html>
 
 <head>
-    <title>PDO - Create a Record - PHP CRUD Tutorial</title>
+    <title>PDO - Read Orders - PHP CRUD Tutorial</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
 </head>
 
 <body>
@@ -28,11 +27,11 @@
 
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Order</a>
+                <a href='order_create.php' class='btn btn-primary m-b-1em'>Create New Order</a>
             </div>
             <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="search" placeholder="Search Product Name" aria-label="Search" style="max-width: 300px;">
+                    <input class="form-control" type="text" name="search" placeholder="Search order no" aria-label="Search" style="max-width: 300px;">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </div>
             </form>
@@ -46,12 +45,12 @@
         // delete message prompt will be here
 
         // select all data
-        $query = "SELECT * FROM orders";
+        $query = "SELECT order_no, order_date, customer_name FROM orders";
 
         // check if search parameter is present in the URL
         if (isset($_GET['search']) && !empty($_GET['search'])) {
             $search_term = htmlspecialchars(strip_tags($_GET['search']));
-            $query .= " WHERE name LIKE '%" . $search_term . "%'";
+            $query .= " WHERE order_no LIKE '%" . $search_term . "%'";
         }
 
         $stmt = $con->prepare($query);
@@ -68,10 +67,9 @@
 
             //creating our table heading
             echo "<tr>";
-            echo "<th>ID</th>";
-            echo "<th>Name</th>";
-            echo "<th>Description</th>";
-            echo "<th>Price</th>";
+            echo "<th>Order No</th>";
+            echo "<th>Order Date</th>";
+            echo "<th>Customer Name</th>";
             echo "<th>Action</th>";
             echo "</tr>";
 
@@ -79,30 +77,26 @@
             // retrieve our table contents
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 // extract row
-                // this will make $row['firstname'] to just $firstname only
+                // this will make $row['order_no'] to just $order_no only
                 extract($row);
                 // creating new table row per record
                 echo "<tr>";
-                echo "<td>{$id}</td>";
-                echo "<td>{$name}</td>";
-                echo "<td>{$description}</td>";
-                echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
-
+                echo "<td>{$order_no}</td>";
+                echo "<td>{$order_date}</td>";
+                echo "<td>{$customer_name}</td>";
                 echo "<td>";
 
                 // read one record
-                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='order_read_one.php?order_no={$order_no}' class='btn btn-info m-r-1em'>Read</a>";
 
-                // we will use this links on next part of this post
-                echo "<a href='update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                // we will use these links on the next part of this post
+                echo "<a href='order_update.php?order_no={$order_no}' class='btn btn-primary m-r-1em'>Edit</a>";
 
-                // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
+                // we will use these links on the next part of this post
+                echo "<a href='#' onclick='delete_order({$order_no});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }
-
-
 
             // end table
             echo "</table>";
@@ -113,12 +107,9 @@
         }
         ?>
 
-
     </div> <!-- end .container -->
 
     <!-- confirm delete record will be here -->
-
-
 </body>
 
 </html>

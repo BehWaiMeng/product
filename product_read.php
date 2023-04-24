@@ -52,7 +52,7 @@
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $total_products = $row['total'];
 
-        echo "<h4>Total Products: " . $total_products . "</h4>";
+        echo "<h5>Total Products: " . $total_products . "</h4>";
 
         // check if search parameter is present in the URL
         if (isset($_GET['search']) && !empty($_GET['search'])) {
