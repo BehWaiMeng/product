@@ -34,7 +34,7 @@
                     <div class="col-md-4">
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h5 class="card-title">Card Title</h5>
+                                <h5 class="card-title">Best Selling Product</h5>
                                 <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in metus libero. Aenean at nisi eget magna bibendum placerat quis vel justo.</p>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                     <div class="col-md-4">
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h5 class="card-title">Card Title</h5>
+                                <h5 class="card-title">Recommended Product</h5>
                                 <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in metus libero. Aenean at nisi eget magna bibendum placerat quis vel justo.</p>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                     <div class="col-md-4">
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h5 class="card-title">Card Title</h5>
+                                <h5 class="card-title">Best Price</h5>
                                 <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in metus libero. Aenean at nisi eget magna bibendum placerat quis vel justo.</p>
                             </div>
                         </div>

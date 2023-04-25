@@ -38,6 +38,17 @@
             echo "Error: " . $e->getMessage();
         }
 
+        // Get all customer names
+        $query = "SELECT username FROM customers";
+        try {
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $customer_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+
+
         if ($_POST) {
             try {
                 // posted values
@@ -73,7 +84,7 @@
                         echo "<div class='alert alert-danger'>The order number already exists. Please enter a unique order number.</div>";
                     } else {
                         // insert query
-                        $query = "INSERT INTO orders SET order_no=:order_no, order_date=:order_date,                     customer_name=:customer_name, product1=:product1, product1_quantity=:product1_quantity, product2=:product2, product2_quantity=:product2_quantity, product3=:product3, product3_quantity=:product3_quantity";
+                        $query = "INSERT INTO orders SET order_no=:order_no, order_date=:order_date, customer_name=:customer_name, product1=:product1, product1_quantity=:product1_quantity, product2=:product2, product2_quantity=:product2_quantity, product3=:product3, product3_quantity=:product3_quantity";
 
                         // prepare query for execution
                         $stmt = $con->prepare($query);
@@ -120,9 +131,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Customer Name</td>
-                    <td><input type="text" name='customer_name' class='form-control' value="<?php echo isset($customer_name) ? htmlspecialchars($customer_name) : ''; ?>" />
-                        <?php if (isset($customer_name_error)) { ?><span class="text-danger"><?php echo $customer_name_error; ?></span><?php } ?></td>
+                    <td>Select Customer</td>
+                    <td>
+                        <select name="customer_name" class="form-control">
+                            <option value="">-- Select Customer --</option>
+                            <?php if ($customer_names != null) {
+                                foreach ($customer_names as $username) { ?>
+                                    <option value="<?php echo $username; ?>" <?php echo isset($customer_name) && $customer_name == $username ? 'selected' : ''; ?>><?php echo $username; ?></option>
+                            <?php }
+                            } ?>
+                        </select>
+                        <?php if (isset($customer_name_error)) { ?><span class="text-danger"><?php echo $customer_name_error; ?></span><?php } ?>
+                    </td>
+
+
                 </tr>
                 <tr>
                     <td>Product 1</td>
@@ -164,13 +186,13 @@
                             } ?>
                         </select>
                     </td>
-                    <td><input type="number" name="product3_quantity" class="form-control" </td>
+                    <td><input type="number" name="product3_quantity" class="form-control" /> </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
                     </td>
                 </tr>
             </table>

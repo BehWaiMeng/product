@@ -31,7 +31,7 @@
             </div>
             <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="search" placeholder="Search order no" aria-label="Search" style="max-width: 300px;">
+                    <input class="form-control" type="text" name="search" placeholder="Search customer name" aria-label="Search" style="max-width: 300px;">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </div>
             </form>
@@ -50,7 +50,7 @@
         // check if search parameter is present in the URL
         if (isset($_GET['search']) && !empty($_GET['search'])) {
             $search_term = htmlspecialchars(strip_tags($_GET['search']));
-            $query .= " WHERE order_no LIKE '%" . $search_term . "%'";
+            $query .= " WHERE customer_name LIKE '%" . $search_term . "%'";
         }
 
         $stmt = $con->prepare($query);
