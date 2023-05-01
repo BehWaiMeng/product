@@ -29,14 +29,8 @@
         include 'config/database.php';
 
         // Get all product names
-        $query = "SELECT name FROM products";
-        try {
-            $stmt = $con->prepare($query);
-            $stmt->execute();
-            $product_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-        }
+
+
 
         // Get all customer names
         $query = "SELECT username FROM customers";
@@ -58,32 +52,42 @@
                 if (empty($customer_name)) {
                     $customer_name_error = "Please enter customer name";
                 }
+                if (empty($products)) {
+                    $products_error = "Please select atleast a product";
+                }
+                if (empty($quantities)) {
+                    $quantities_error = "Please select atleast a quantity";
+                }
 
-                if (!isset($customer_name_error)) {
+                if (!isset($customer_name_error) && !isset($products_error) && !isset($quantities_error)) {
                     // Insert the order into the database
                     $query = "INSERT INTO orders SET order_date=:order_date, customer_name=:customer_name";
                     $stmt = $con->prepare($query);
                     $stmt->bindParam(':customer_name', $customer_name);
-
                     $order_date = date('Y-m-d H:i:s');
                     $stmt->bindParam(':order_date', $order_date);
-
+                    //$stmt->execute();
                     if ($stmt->execute()) {
                         $order_id = $con->lastInsertId();
+                        for ($x = 0; $x < count($products); $x++) {
+                            // Insert the order details into the database
+                            $query = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
+                            $stmt = $con->prepare($query);
+                            $stmt->bindParam(':order_id', $order_id);
+                            $stmt->bindParam(':product_id', $products[$x]);
+                            $stmt->bindParam(':quantity', $quantities[$x]);
+                            $stmt->execute();
+                        }
 
-                        // Insert the order details into the database
-                        $query = "INSERT INTO order_details SET order_id=:order_id, product_id=:product_id, quantity=:quantity";
-                        $stmt = $con->prepare($query);
-                        $stmt->bindParam(':order_id', $order_id);
-                        $stmt->bindParam(':product', $product);
-                        $stmt->bindParam(':quantity', $quantity);
 
-                        foreach ($products as $index => $product) {
+
+
+                        /*foreach ($products as $index => $product) {
                             if (!empty($product) && !empty($quantities[$index])) {
                                 $quantity = htmlspecialchars(strip_tags($quantities[$index]));
                                 $stmt->execute();
                             }
-                        }
+                        }*/
 
                         echo "<div class='alert alert-success'>Record was saved.</div>";
                     } else {
@@ -125,24 +129,41 @@
                         <td>
                             <select name="product[]" class="form-control">
                                 <option value="">-- Select Product --</option>
-                                <?php if ($product_names != null) {
-                                    foreach ($product_names as $name) { ?>
-                                        <option value="<?php echo $name; ?>"><?php echo $name; ?></option>
-                                <?php }
-                                } ?>
+                                <?php /*if ($product_names != null) {
+                                    foreach ($product_names as $name && ) { ?>
+                                        <option value="<?php echo $name; */
+                                ?>">
+
+                                <?php
+                                $query = "SELECT * FROM products";
+                                $stmtproduct = $con->prepare($query);
+                                $stmtproduct->execute();
+
+                                while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
+                                    extract($product_row);
+                                    echo "<option value= $id>$name</option>";
+                                }
+
+                                ?>
+
+
+
+
+
                             </select>
                         </td>
                         <td><input type="number" name="quantity[]" class="form-control" min="1" /></td>
+                    <?php } ?>
                     </tr>
-                <?php } ?>
 
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
-                    </td>
-                </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type='submit' value='Save' class='btn btn-primary' />
+                            <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
+                        </td>
+                    </tr>
             </table>
         </form>
 

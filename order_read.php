@@ -32,7 +32,7 @@
             <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
                 <div class="input-group">
                     <input class="form-control" type="text" name="search" placeholder="Search customer name" aria-label="Search" style="max-width: 300px;">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <button class="btn btn-outline-success" type="submit">Search Order ID</button>
                 </div>
             </form>
         </div>
@@ -45,7 +45,7 @@
         // delete message prompt will be here
 
         // select all data
-        $query = "SELECT order_no, order_date, customer_name FROM orders";
+        $query = "SELECT order_id, order_date, customer_name FROM orders";
 
         // check if search parameter is present in the URL
         if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -67,7 +67,7 @@
 
             //creating our table heading
             echo "<tr>";
-            echo "<th>Order No</th>";
+            echo "<th>Order ID</th>";
             echo "<th>Order Date</th>";
             echo "<th>Customer Name</th>";
             echo "<th>Action</th>";
@@ -81,19 +81,17 @@
                 extract($row);
                 // creating new table row per record
                 echo "<tr>";
-                echo "<td>{$order_no}</td>";
+                echo "<td>{$order_id}</td>";
                 echo "<td>{$order_date}</td>";
                 echo "<td>{$customer_name}</td>";
-                echo "<td>";
-
-                // read one record
-                echo "<a href='order_read_one.php?order_no={$order_no}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<td>";            // read one record
+                echo "<a href='order_detail_read.php?order_id={$order_id}' class='btn btn-info m-r-1em'>Read</a>";
 
                 // we will use these links on the next part of this post
-                echo "<a href='order_update.php?order_no={$order_no}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='order_update.php?order_id={$order_id}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                 // we will use these links on the next part of this post
-                echo "<a href='#' onclick='delete_order({$order_no});'  class='btn btn-danger'>Delete</a>";
+                echo "<a href='#' onclick='delete_order({$order_id});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }
