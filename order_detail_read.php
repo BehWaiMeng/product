@@ -81,7 +81,7 @@
                     echo "<td>{$quantity}</td>";
                     echo "<td>";
 
-                    // read one record
+                    // read one record/
                     echo "<a href='order_detail_update.php?order_details_id={$order_details_id}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                     // we will use these links on the next part of this post
