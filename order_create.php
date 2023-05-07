@@ -38,9 +38,57 @@
             echo "Error: " . $e->getMessage();
         }
 
-        // Your PHP code to handle form submission
+        // Handle form submission
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Insert order data into the orders table
+            $query = "INSERT INTO orders (customer_name, order_date) VALUES (:customer_name, NOW())";
 
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(':customer_name', $_POST['customer_name']);
+
+            if ($stmt->execute()) {
+                $order_id = $con->lastInsertId();
+
+                // Insert order details into the order_details table
+                $product_ids = $_POST['product'];
+                $quantities = $_POST['quantity'];
+                $item_count = count($product_ids);
+
+                for ($i = 0; $i < $item_count; $i++) {
+                    if (!empty($product_ids[$i]) && !empty($quantities[$i])) {
+                        // Get the price for the current product
+                        $query_price = "SELECT price FROM products WHERE id = :product_id";
+                        $stmt_price = $con->prepare($query_price);
+                        $stmt_price->bindParam(':product_id', $product_ids[$i]);
+                        $stmt_price->execute();
+                        $price = $stmt_price->fetchColumn();
+
+                        // Calculate the total price for the current product
+                        $total_price = $price * $quantities[$i];
+
+                        // Insert the order details
+                        $query = "INSERT INTO order_details (order_id, product_id, quantity, per_price, total_price, order_date) VALUES (:order_id, :product_id, :quantity, :per_price, :total_price, NOW())";
+                        $stmt = $con->prepare($query);
+                        $stmt->bindParam(':order_id', $order_id);
+                        $stmt->bindParam(':product_id', $product_ids[$i]);
+                        $stmt->bindParam(':quantity', $quantities[$i]);
+                        $stmt->bindParam(':per_price', $price); // Make sure this matches the correct column name
+                        $stmt->bindParam(':total_price', $total_price);
+                        $stmt->execute();
+                    }
+                }
+
+                $record_saved = true;
+            } else {
+                $record_saved = false;
+            }
+        }
         ?>
+        <?php if (isset($record_saved) && $record_saved) { ?>
+            <div class="alert alert-success">Record was saved successfully.</div>
+        <?php } elseif (isset($record_saved) && !$record_saved) { ?>
+            <div class="alert alert-danger">Failed to save record. Please try again.</div>
+        <?php } ?>
 
         <!-- html form here where the product information will be entered -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -48,7 +96,6 @@
                 <div class="col-12 mb-2 ">
                     <label class="order-form-label">Username</label>
                 </div>
-
                 <div class="col-12 mb-2">
                     <select name="customer_name" class="form-control">
                         <option value="">-- Select Customer --</option>
@@ -115,12 +162,13 @@
                 element.after(clone);
             }
             if (event.target.matches('.delete_one')) {
-                var total = document.querySelectorAll('.pRow').length;
+                var elements = document.querySelectorAll('.pRow');
+                var total = elements.length;
                 if (total > 1) {
-                    var element = document.querySelector('.pRow:last-child');
-                    element.remove();
+                    elements[total - 1].remove();
                 }
             }
+
         }, false);
     </script>
 </body>

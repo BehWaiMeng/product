@@ -43,7 +43,7 @@
             $order_id = htmlspecialchars(strip_tags($_GET['order_id']));
 
             // select all data
-            $query = "SELECT order_details_id, order_id, product_id, quantity FROM `order_details` WHERE order_id = :order_id";
+            $query = "SELECT od.order_details_id, od.order_id, od.product_id, od.quantity, p.price FROM `order_details` od INNER JOIN `products` p ON od.product_id = p.id WHERE order_id = :order_id";
 
             $stmt = $con->prepare($query);
             $stmt->bindParam(':order_id', $order_id);
@@ -60,25 +60,34 @@
 
                 //creating our table heading
                 echo "<tr>";
-                echo "<th>Order details id
-                </th>";
                 echo "<th>Order ID</th>";
                 echo "<th>Product ID</th>";
                 echo "<th>Quantity</th>";
+                echo "<th>Price</th>"; // Add price column
+                echo "<th>Total Price</th>"; // Add total price column
                 echo "<th>Action</th>";
                 echo "</tr>";
-                // table body will be here
+
+                $total = 0; // Declare a variable to store the total price for all products
+
                 // retrieve our table contents
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     // extract row
-                    // this will make $row['order_details_id'] to just $order_details_id only
                     extract($row);
+
+                    // Calculate total price for each product
+                    $total_price = $quantity * $price;
+
+                    // Add the total price of the current product to the total
+                    $total += $total_price;
+
                     // creating new table row per record
                     echo "<tr>";
-                    echo "<td>{$order_details_id}</td>";
-                    echo "<td>{$order_id}</td>";
+                    echo "<td>{$order_id}</td>"; // Corrected: added missing double-quote
                     echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
+                    echo "<td class='text-end'>{$price}</td>"; // Add text-end class to align the price to the right
+                    echo "<td class='text-end'>{$total_price}</td>"; // Add text-end class to align the total price to the right
                     echo "<td>";
 
                     // read one record/
@@ -90,6 +99,12 @@
                     echo "</tr>";
                 }
 
+                // Display the total price for all products
+                echo "<tr>";
+                echo "<td colspan='4' class='text-end'><strong>Total Price:</strong></td>"; // colspan updated to 4
+                echo "<td class='text-end'>{$total}</td>"; // Add text-end class to align the overall total price to the right
+                echo "<td></td>";
+                echo "</tr>";
                 // end table
                 echo "</table>";
             }
