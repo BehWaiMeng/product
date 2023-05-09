@@ -85,16 +85,19 @@
                 echo "<td>{$gender}</td>";
                 echo "<td>{$dob}</td>";
 
+                // ...
                 echo "<td>";
                 // read one record
-                echo "<a href='customer_read_one.php?username={$username}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='customer_read_one.php?username={$username}' class='btn btn-info me-3'>Read</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='customer_update.php?username={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='customer_update.php?username={$username}' class='btn btn-primary me-3'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user(\"{$username}\");'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
+                // ...
+
                 echo "</tr>";
             }
 
