@@ -122,6 +122,39 @@
             <input type="submit" class="btn btn-primary" value="Update">
             <a href="customer_read.php" class="btn btn-danger">Cancel</a>
         </form>
+
+        <!-- Change password button -->
+        <div class="mt-4">
+
+            <a href="change_password.php?username=<?php echo urlencode($username2); ?>" class="btn btn-secondary">Change Password</a>
+        </div>
+
+
+        <?php
+        if (isset($_POST['change_password'])) {
+            $new_password = htmlspecialchars(strip_tags($_POST['new_password']));
+            $confirm_password = htmlspecialchars(strip_tags($_POST['confirm_password']));
+
+            if ($new_password === $confirm_password) {
+                $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+
+                // Update the password
+                $query = "UPDATE customers SET password=:password WHERE username=:username";
+                $stmt = $con->prepare($query);
+
+                $stmt->bindParam(':password', $hashed_password);
+                $stmt->bindParam(':username', $username);
+
+                if ($stmt->execute()) {
+                    echo "<div class='alert alert-success'>Password was changed successfully.</div>";
+                } else {
+                    echo "<div class='alert alert-danger'>Unable to change the password.</div>";
+                }
+            } else {
+                echo "<div class='alert alert-danger'>New password and confirmation do not match.</div>";
+            }
+        }
+        ?>
     </div>
 </body>
 
