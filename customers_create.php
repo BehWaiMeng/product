@@ -35,6 +35,7 @@
         </div>
         <?php
         if ($_POST) {
+
             // include database connection
             include 'config/database.php';
             try {
@@ -134,8 +135,6 @@
             }
         }
         ?>
-
-
 
         <!-- html form here where the product information will be entered -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">

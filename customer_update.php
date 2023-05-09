@@ -70,6 +70,9 @@
         <?php
         // check if form was submitted
         if ($_POST) {
+
+
+
             try {
                 // write update query
                 $query = "UPDATE customers
@@ -78,6 +81,7 @@
 
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
+
                 // posted values
                 $fname = htmlspecialchars(strip_tags($_POST['fname']));
                 $lname = htmlspecialchars(strip_tags($_POST['lname']));
@@ -85,18 +89,47 @@
                 $dob = htmlspecialchars(strip_tags($_POST['dob']));
                 $status = htmlspecialchars(strip_tags($_POST['status']));
 
-                // bind the parameters
-                $stmt->bindParam(':fname', $fname);
-                $stmt->bindParam(':lname', $lname);
-                $stmt->bindParam(':gender', $gender);
-                $stmt->bindParam(':dob', $dob);
-                $stmt->bindParam(':status', $status);
-                $stmt->bindParam(':username', $username);
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
+                //check empty
+                if (empty($fname)) {
+                    $fname_error = "Please enter First name";
+                }
+                if (empty($lname)) {
+                    $lname_error = "Please enter Last name";
+                }
+                if (empty($gender)) {
+                    $gender_error = "Please enter Gender";
+                }
+                if (empty($dob)) {
+                    $dob_error = "Please enter Date Of Birth";
+                }
+
+                if (empty($status)) {
+                    $status_error = "Please select Status";
+                }
+
+                //check if there are any errors
+                if (!isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($dob_error) && !isset($status_error)) {
+
+
+
+
+
+                    // bind the parameters
+                    $stmt->bindParam(':fname', $fname);
+                    $stmt->bindParam(':lname', $lname);
+                    $stmt->bindParam(':gender', $gender);
+                    $stmt->bindParam(':dob', $dob);
+                    $stmt->bindParam(':status', $status);
+                    $stmt->bindParam(':username', $username);
+
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    }
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
                 }
             }
             // show errors
@@ -104,21 +137,30 @@
                 die('ERROR: ' . $exception->getMessage());
             }
         }
-        ?> <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?username={$username2}"); ?>" method="post">
+        ?>
+
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?username={$username2}"); ?>" method="post">
             <table class='table table-hover table-responsive table-bordered'>
                 <tr>
                     <td>First Name</td>
                     <td><input type='text' name='fname' value="<?php echo htmlspecialchars($fname, ENT_QUOTES);  ?>" class='form-control' /></td>
+
+                    <?php if (isset($fname_error)) { ?><span class="text-danger"><?php echo $fname_error; ?></span><?php } ?>
+
                 </tr>
                 <tr>
                     <td>Last Name</td>
-                    <td><textarea name='lname' class='form-control'><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></textarea></td>
+                    <td><textarea name='lname' class='form-control'><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></textarea>
+                        <?php if (isset($lname_error)) { ?><span class="text-danger"><?php echo $lname_error; ?></span><?php } ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>gender</td>
                     <td>
                         <input type="radio" name="gender" value="Male" <?php if (isset($gender) && $gender == "Male") echo "checked"; ?>> Male
                         <input type="radio" name="gender" value="Female" <?php if (isset($gender) && $gender == "Female") echo "checked"; ?>> Female
+                        <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
+
 
                         <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
                     </td>
@@ -127,6 +169,7 @@
                     <td>date of birth</td>
                     <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
                         <?php if (isset($dob_error)) { ?><span class="text-danger"><?php echo $dob_error; ?></span><?php } ?></<td>
+
                 </tr>
                 <tr>
                     <td>status</td>
@@ -134,13 +177,15 @@
                         <input type="radio" name="status" value="Active" <?php if (isset($status) && $status == "Active") echo "checked"; ?>> Active
                         <input type="radio" name="status" value="Inactive" <?php if (isset($status) && $status == "Inactive") echo "checked"; ?>> Inactive
                         <?php if (isset($status_error)) { ?><span class="text-danger"><?php echo $status_error; ?></span><?php } ?>
+
+
                     </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
                         <input type='submit' value='Save Changes' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href='customers_create.php' class='btn btn-danger'>Back to read products</a>
                     </td>
                 </tr>
             </table>
