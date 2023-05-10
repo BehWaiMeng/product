@@ -57,6 +57,7 @@
             $fname = $row['fname'];
             $lname = $row['lname'];
             $gender = $row['gender'];
+
             $dob = $row['dob'];
             $status = $row['status'];
         }
@@ -76,19 +77,28 @@
             try {
                 // write update query
                 $query = "UPDATE customers
-                  SET fname=:fname, lname=:lname, gender=:gender, dob=:dob, status=:status
+                  SET fname=:fname, lname=:lname, gender=:gender, old_password=:old_password, new_password=:new_password, confirm_password=:confirm_password,
+                   dob=:dob, status=:status
                   WHERE username = :username";
 
                 // prepare query for excecution
                 $stmt = $con->prepare($query);
 
-                // posted values
-                $fname = htmlspecialchars(strip_tags($_POST['fname']));
-                $lname = htmlspecialchars(strip_tags($_POST['lname']));
-                $gender = htmlspecialchars(strip_tags($_POST['gender']));
-                $dob = htmlspecialchars(strip_tags($_POST['dob']));
-                $status = htmlspecialchars(strip_tags($_POST['status']));
 
+                // posted values
+                $fname = isset($_POST['fname']) ? htmlspecialchars(strip_tags($_POST['fname'])) : '';
+                $lname = isset($_POST['lname']) ? htmlspecialchars(strip_tags($_POST['lname'])) : '';
+                $gender = isset($_POST['gender']) ? htmlspecialchars(strip_tags($_POST['gender'])) : '';
+                $old_password = isset($_POST['old_password']) ? htmlspecialchars(strip_tags($_POST['old_password'])) : '';
+                $new_password = isset($_POST['new_password']) ? htmlspecialchars(strip_tags($_POST['new_password'])) : '';
+                $confirm_password = isset($_POST['confirm_password']) ? htmlspecialchars(strip_tags($_POST['confirm_password'])) : '';
+                $dob = isset($_POST['dob']) ? htmlspecialchars(strip_tags($_POST['dob'])) : '';
+                $status = isset($_POST['status']) ? htmlspecialchars(strip_tags($_POST['status'])) : '';
+
+
+
+
+                //check empty
                 //check empty
                 if (empty($fname)) {
                     $fname_error = "Please enter First name";
@@ -99,45 +109,84 @@
                 if (empty($gender)) {
                     $gender_error = "Please enter Gender";
                 }
+                if (empty($old_password)) {
+                    $old_password_error = "Please type in the old password";
+                }
+                if (empty($new_password)) {
+                    $new_password_error = "Please type in the new password";
+                }
+                if (empty($confirm_password)) {
+                    $confirm_password_error = "Please type in the confirm password";
+                }
                 if (empty($dob)) {
                     $dob_error = "Please enter Date Of Birth";
                 }
-
                 if (empty($status)) {
                     $status_error = "Please select Status";
                 }
 
+                // Verify old password
+                if (!password_verify($old_password, $password)) {
+                    $old_password_error = "Incorrect old password";
+                }
+
+                // Check if new_password and confirm_password match
+                if ($new_password !== $confirm_password) {
+                    $confirm_password_error = "New password and confirm password do not match";
+                }
+
+
+
+
                 //check if there are any errors
-                if (!isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($dob_error) && !isset($status_error)) {
+                if (!isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($old_password_error) && !isset($new_password_error) && !isset($confirm_password_error) && !isset($gender_error) && !isset($dob_error) && !isset($status_error)) {
+                    try {
+
+                        // write update query
+                        $query = "UPDATE customers
+                        SET fname=:fname, lname=:lname, gender=:gender, password=:password, dob=:dob, status=:status
+                        WHERE username = :username";
 
 
+                        // prepare query for excecution
+                        $stmt = $con->prepare($query);
 
+                        // hash the new password
+                        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
+                        // bind the parameters
+                        $stmt->bindParam(':fname', $fname);
+                        $stmt->bindParam(':lname', $lname);
+                        $stmt->bindParam(':password', $hashed_password);
+                        $stmt->bindParam(':gender', $gender);
+                        $stmt->bindParam(':dob', $dob);
+                        $stmt->bindParam(':status', $status);
+                        $stmt->bindParam(':username', $username);
 
-                    // bind the parameters
-                    $stmt->bindParam(':fname', $fname);
-                    $stmt->bindParam(':lname', $lname);
-                    $stmt->bindParam(':gender', $gender);
-                    $stmt->bindParam(':dob', $dob);
-                    $stmt->bindParam(':status', $status);
-                    $stmt->bindParam(':username', $username);
-
-                    // Execute the query
-                    if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Record was updated.</div>";
-                    } else {
-                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                        // Execute the query
+                        if ($stmt->execute()) {
+                            echo "<div class='alert alert-success'>Record was updated.</div>";
+                        } else {
+                            echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                        }
+                    } catch (PDOException $exception) {
+                        die('ERROR: ' . $exception->getMessage());
                     }
                 } else {
                     echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
                 }
             }
+
             // show errors
             catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
             }
         }
+
+
         ?>
+
+
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?username={$username2}"); ?>" method="post">
             <table class='table table-hover table-responsive table-bordered'>
@@ -160,11 +209,31 @@
                         <input type="radio" name="gender" value="Male" <?php if (isset($gender) && $gender == "Male") echo "checked"; ?>> Male
                         <input type="radio" name="gender" value="Female" <?php if (isset($gender) && $gender == "Female") echo "checked"; ?>> Female
                         <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
-
-
-                        <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
                     </td>
                 </tr>
+                <tr>
+                    <td>Old Password</td>
+                    <td>
+                        <input type='password' name='old_password' class='form-control' />
+                        <?php if (isset($old_password_error)) { ?><span class="text-danger"><?php echo $old_password_error; ?></span><?php } ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>New Password</td>
+                    <td>
+                        <input type='password' name='new_password' class='form-control' />
+                        <?php if (isset($new_password_error)) { ?><span class="text-danger"><?php echo $new_password_error; ?></span><?php } ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Confirm Password</td>
+                    <td>
+                        <input type='password' name='confirm_password' class='form-control' />
+                        <?php if (isset($confirm_password_error)) { ?><span class="text-danger"><?php echo $confirm_password_error; ?></span><?php } ?>
+                    </td>
+                </tr>
+
+
                 <tr>
                     <td>date of birth</td>
                     <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
