@@ -76,20 +76,20 @@
 
 
                 if (empty($fname)) {
-                    $fname_error = "Please enter fname";
+                    $fname_error = "Please enter First name";
                 }
                 if (empty($lname)) {
-                    $lname_error = "Please enter lname";
+                    $lname_error = "Please enter Last name";
                 }
                 if (empty($gender)) {
-                    $gender_error = "Please enter gender";
+                    $gender_error = "Please select Gender";
                 }
                 if (empty($dob)) {
-                    $dob_error = "Please enter dob";
+                    $dob_error = "Please enter Date OF Birth";
                 }
 
                 if (empty($status)) {
-                    $status_error = "Please select status";
+                    $status_error = "Please select Status";
                 }
 
 
@@ -149,11 +149,16 @@
                     <td><input type='password' name='Password' class='form-control' value="<?php echo isset($Password) ? htmlspecialchars($Password) : ''; ?>" />
                         <?php if (isset($password_error)) { ?><span class="text-danger"><?php echo $password_error; ?></span><?php } ?></<td>
                 </tr>
+
                 <tr>
                     <td>confirmpassword</td>
-                    <td><input type='password' name='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''; ?>" />
-                        <?php if (isset($confirmpassword_error)) { ?><span class="text-danger"><?php echo $confirmpassword_error; ?></span><?php } ?></<td>
+                    <td>
+                        <input type='password' name='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword_error) ? '' : (isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''); ?>" />
+
+                        <?php if (isset($confirmpassword_error)) { ?><span class="text-danger"><?php echo $confirmpassword_error; ?></span><?php } ?>
+                    </td>
                 </tr>
+
                 <tr>
                     <td>firstname</td>
                     <td><input type='text' name='fname' class='form-control' value="<?php echo isset($fname) ? htmlspecialchars($fname) : ''; ?>" />

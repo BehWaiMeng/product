@@ -74,14 +74,14 @@
 
                 echo "<td>";
                 // read one record
-                echo "<a href='category_read_one.php?category_id={$category_id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='category_read_one.php?category_id={$category_id}' class='btn btn-info me-2'>Read</a>";
 
 
                 // we will use this links on next part of this post
-                echo "<a href='update.php?category_id={$category_id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='category_update.php?category_id={$category_id}' class='btn btn-primary me-2'>Edit</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
+                echo "<a href='category_delete.php' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }

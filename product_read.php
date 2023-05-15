@@ -98,10 +98,10 @@
                 echo "<td>";
 
                 // read one record
-                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='product_read_one.php?id={$id}' class='btn btn-info me-2'>Read</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='product_update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='product_update.php?id={$id}' class='btn btn-primary me-2'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
@@ -128,7 +128,7 @@
             if (answer) {
                 // if user clicked ok,
                 // pass the ID to delete.php and execute the delete query
-                window.location = 'delete.php?id=' + id;
+                window.location = 'product_delete.php?id=' + id;
             }
         }
     </script>

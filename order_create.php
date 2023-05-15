@@ -19,8 +19,8 @@
     ?>
 
     <!-- container -->
-    <div class="container-fluid mt-5 p-5 mb-4">
-        <div class="page-header text-center mb-4">
+    <div class="container">
+        <div class="page-header ">
             <h1>Create Order</h1>
         </div>
 

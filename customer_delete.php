@@ -15,12 +15,12 @@
 
     try {
         // Get the record username
-        $username3 = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record username not found.');
+        $username2 = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record username not found.');
 
         // Delete query
         $query = "DELETE FROM customers WHERE username = ?";
         $stmt = $con->prepare($query);
-        $stmt->bindParam(1, $username3);
+        $stmt->bindParam(1, $username2);
         if ($stmt->execute()) {
             // Redirect to the Read Customers page and
             // tell the user the record was deleted

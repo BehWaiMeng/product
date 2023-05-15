@@ -28,87 +28,71 @@
 <body>
     <?php
 
-    include 'navbar.php'; ?>
+    include 'navbar.php';
 
-    <!-- container -->
-    <div class="container">
-        <div class="page-header">
-            <h1>Update Customer</h1>
-        </div>
-        <?php
-        // get passed parameter value, in this case, the record ID
-        // isset() is a PHP function used to verify if a value is there or not
-        $username2 = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record Username not found.');
+    echo '<div class="container">
+    <div class="page-header">
+        <h1>Update Customer</h1>
+    </div>';
 
-        //include database connection
-        include 'config/database.php';
+    $username2 = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record Username not found.');
 
-        // read current record's data
+    include 'config/database.php';
+
+    try {
+        $query = "SELECT * FROM customers WHERE username = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(1, $username2);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $username = $row['username'];
+        $fname = $row['fname'];
+        $lname = $row['lname'];
+        $gender = $row['gender'];
+        $dob = $row['dob'];
+        $status = $row['status'];
+        $password = $row['Password'];  // Get current password from the database
+    } catch (PDOException $exception) {
+        die('ERROR: ' . $exception->getMessage());
+    }
+
+    if ($_POST) {
+
         try {
-            // prepare select query
-            $query = "SELECT * FROM customers WHERE username = ?";
+            $query = "UPDATE customers
+            SET fname=:fname, lname=:lname, gender=:gender, password=:password, dob=:dob, status=:status
+            WHERE username = :username";
             $stmt = $con->prepare($query);
-            $stmt->bindParam(1, $username2);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // values to fill up our form
-            $username = $row['username'];
-            $fname = $row['fname'];
-            $lname = $row['lname'];
-            $gender = $row['gender'];
+            $fname = isset($_POST['fname']) ? htmlspecialchars(strip_tags($_POST['fname'])) : '';
+            $lname = isset($_POST['lname']) ? htmlspecialchars(strip_tags($_POST['lname'])) : '';
+            $gender = isset($_POST['gender']) ? htmlspecialchars(strip_tags($_POST['gender'])) : '';
+            $old_password = isset($_POST['old_password']) ? htmlspecialchars(strip_tags($_POST['old_password'])) : '';
+            $new_password = isset($_POST['new_password']) ? htmlspecialchars(strip_tags($_POST['new_password'])) : '';
+            $confirm_password = isset($_POST['confirm_password']) ? htmlspecialchars(strip_tags($_POST['confirm_password'])) : '';
+            $dob = isset($_POST['dob']) ? htmlspecialchars(strip_tags($_POST['dob'])) : '';
+            $status = isset($_POST['status']) ? htmlspecialchars(strip_tags($_POST['status'])) : '';
 
-            $dob = $row['dob'];
-            $status = $row['status'];
-        }
+            if (empty($fname)) {
+                $fname_error = "Please enter First name";
+            }
+            if (empty($lname)) {
+                $lname_error = "Please enter Last name";
+            }
+            if (empty($gender)) {
+                $gender_error = "Please enter Gender";
+            }
 
-        // show error
-        catch (PDOException $exception) {
-            die('ERROR: ' . $exception->getMessage());
-        }
-        ?>
+            if (empty($dob)) {
+                $dob_error = "Please enter Date Of Birth";
+            }
+            if (empty($status)) {
+                $status_error = "Please select Status";
+            }
 
-        <?php
-        // check if form was submitted
-        if ($_POST) {
+            if (!empty($old_password) || !empty($new_password) || !empty($confirm_password)) {
 
-
-
-            try {
-                // write update query
-                $query = "UPDATE customers
-                  SET fname=:fname, lname=:lname, gender=:gender, old_password=:old_password, new_password=:new_password, confirm_password=:confirm_password,
-                   dob=:dob, status=:status
-                  WHERE username = :username";
-
-                // prepare query for excecution
-                $stmt = $con->prepare($query);
-
-
-                // posted values
-                $fname = isset($_POST['fname']) ? htmlspecialchars(strip_tags($_POST['fname'])) : '';
-                $lname = isset($_POST['lname']) ? htmlspecialchars(strip_tags($_POST['lname'])) : '';
-                $gender = isset($_POST['gender']) ? htmlspecialchars(strip_tags($_POST['gender'])) : '';
-                $old_password = isset($_POST['old_password']) ? htmlspecialchars(strip_tags($_POST['old_password'])) : '';
-                $new_password = isset($_POST['new_password']) ? htmlspecialchars(strip_tags($_POST['new_password'])) : '';
-                $confirm_password = isset($_POST['confirm_password']) ? htmlspecialchars(strip_tags($_POST['confirm_password'])) : '';
-                $dob = isset($_POST['dob']) ? htmlspecialchars(strip_tags($_POST['dob'])) : '';
-                $status = isset($_POST['status']) ? htmlspecialchars(strip_tags($_POST['status'])) : '';
-
-
-
-
-                //check empty
-                //check empty
-                if (empty($fname)) {
-                    $fname_error = "Please enter First name";
-                }
-                if (empty($lname)) {
-                    $lname_error = "Please enter Last name";
-                }
-                if (empty($gender)) {
-                    $gender_error = "Please enter Gender";
-                }
                 if (empty($old_password)) {
                     $old_password_error = "Please type in the old password";
                 }
@@ -118,147 +102,140 @@
                 if (empty($confirm_password)) {
                     $confirm_password_error = "Please type in the confirm password";
                 }
-                if (empty($dob)) {
-                    $dob_error = "Please enter Date Of Birth";
-                }
-                if (empty($status)) {
-                    $status_error = "Please select Status";
-                }
 
                 // Verify old password
-                if (!password_verify($old_password, $password)) {
+                $old_password = md5($old_password);
+                if ($old_password != $password) {
                     $old_password_error = "Incorrect old password";
+                }
+
+                if ($old_password ==  md5($new_password)) {
+                    $new_password_error = "balablab";
                 }
 
                 // Check if new_password and confirm_password match
                 if ($new_password !== $confirm_password) {
                     $confirm_password_error = "New password and confirm password do not match";
                 }
+            }
 
+            //check if there are any errors
+            if (!isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($old_password_error) && !isset($new_password_error) && !isset($confirm_password_error) && !isset($dob_error) && !isset($status_error)) {
 
+                try {
+                    $query = "UPDATE customers
+                            SET fname=:fname, lname=:lname, gender=:gender, password=:password, dob=:dob, status=:status
+                            WHERE username = :username";
+                    $stmt = $con->prepare($query);
 
+                    $hashed_password = md5($new_password);
 
-                //check if there are any errors
-                if (!isset($fname_error) && !isset($lname_error) && !isset($gender_error) && !isset($old_password_error) && !isset($new_password_error) && !isset($confirm_password_error) && !isset($gender_error) && !isset($dob_error) && !isset($status_error)) {
-                    try {
+                    $stmt->bindParam(':fname', $fname);
+                    $stmt->bindParam(':lname', $lname);
+                    $stmt->bindParam(':password', $hashed_password);
+                    $stmt->bindParam(':gender', $gender);
+                    $stmt->bindParam(':dob', $dob);
+                    $stmt->bindParam(':status', $status);
+                    $stmt->bindParam(':username', $username);
 
-                        // write update query
-                        $query = "UPDATE customers
-                        SET fname=:fname, lname=:lname, gender=:gender, password=:password, dob=:dob, status=:status
-                        WHERE username = :username";
-
-
-                        // prepare query for excecution
-                        $stmt = $con->prepare($query);
-
-                        // hash the new password
-                        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-                        // bind the parameters
-                        $stmt->bindParam(':fname', $fname);
-                        $stmt->bindParam(':lname', $lname);
-                        $stmt->bindParam(':password', $hashed_password);
-                        $stmt->bindParam(':gender', $gender);
-                        $stmt->bindParam(':dob', $dob);
-                        $stmt->bindParam(':status', $status);
-                        $stmt->bindParam(':username', $username);
-
-                        // Execute the query
-                        if ($stmt->execute()) {
-                            echo "<div class='alert alert-success'>Record was updated.</div>";
-                        } else {
-                            echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
-                        }
-                    } catch (PDOException $exception) {
-                        die('ERROR: ' . $exception->getMessage());
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
                     }
-                } else {
-                    echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
+                } catch (PDOException $exception) {
+                    die('ERROR: ' . $exception->getMessage());
                 }
+            } else {
+                echo "<div class='alert alert-danger'>Please fill up all the empty place.</div>";
             }
-
-            // show errors
-            catch (PDOException $exception) {
-                die('ERROR: ' . $exception->getMessage());
-            }
+        } catch (PDOException $exception) {
+            die('ERROR: ' . $exception->getMessage());
         }
+    }
 
 
-        ?>
+    ?>
 
 
 
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?username={$username2}"); ?>" method="post">
-            <table class='table table-hover table-responsive table-bordered'>
-                <tr>
-                    <td>First Name</td>
-                    <td><input type='text' name='fname' value="<?php echo htmlspecialchars($fname, ENT_QUOTES);  ?>" class='form-control' /></td>
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?username={$username2}"); ?>" method="post">
+        <table class='table table-hover table-responsive table-bordered'>
+            <!-- Add this inside the table element where you have other input fields -->
+            <tr>
+                <td>Username</td>
+                <td><input type='text' name='username' value="<?php echo htmlspecialchars($username, ENT_QUOTES); ?>" class='form-control' readonly /></td>
+            </tr>
 
-                    <?php if (isset($fname_error)) { ?><span class="text-danger"><?php echo $fname_error; ?></span><?php } ?>
+            <tr>
+                <td>First Name</td>
+                <td><input type='text' name='fname' value="<?php echo htmlspecialchars($fname, ENT_QUOTES);  ?>" class='form-control' /></td>
 
-                </tr>
-                <tr>
-                    <td>Last Name</td>
-                    <td><textarea name='lname' class='form-control'><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></textarea>
-                        <?php if (isset($lname_error)) { ?><span class="text-danger"><?php echo $lname_error; ?></span><?php } ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>gender</td>
-                    <td>
-                        <input type="radio" name="gender" value="Male" <?php if (isset($gender) && $gender == "Male") echo "checked"; ?>> Male
-                        <input type="radio" name="gender" value="Female" <?php if (isset($gender) && $gender == "Female") echo "checked"; ?>> Female
-                        <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Old Password</td>
-                    <td>
-                        <input type='password' name='old_password' class='form-control' />
-                        <?php if (isset($old_password_error)) { ?><span class="text-danger"><?php echo $old_password_error; ?></span><?php } ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>New Password</td>
-                    <td>
-                        <input type='password' name='new_password' class='form-control' />
-                        <?php if (isset($new_password_error)) { ?><span class="text-danger"><?php echo $new_password_error; ?></span><?php } ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Confirm Password</td>
-                    <td>
-                        <input type='password' name='confirm_password' class='form-control' />
-                        <?php if (isset($confirm_password_error)) { ?><span class="text-danger"><?php echo $confirm_password_error; ?></span><?php } ?>
-                    </td>
-                </tr>
+                <?php if (isset($fname_error)) { ?><span class="text-danger"><?php echo $fname_error; ?></span><?php } ?>
 
-
-                <tr>
-                    <td>date of birth</td>
-                    <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
-                        <?php if (isset($dob_error)) { ?><span class="text-danger"><?php echo $dob_error; ?></span><?php } ?></<td>
-
-                </tr>
-                <tr>
-                    <td>status</td>
-                    <td>
-                        <input type="radio" name="status" value="Active" <?php if (isset($status) && $status == "Active") echo "checked"; ?>> Active
-                        <input type="radio" name="status" value="Inactive" <?php if (isset($status) && $status == "Inactive") echo "checked"; ?>> Inactive
-                        <?php if (isset($status_error)) { ?><span class="text-danger"><?php echo $status_error; ?></span><?php } ?>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td><textarea name='lname' class='form-control'><?php echo htmlspecialchars($lname, ENT_QUOTES);  ?></textarea>
+                    <?php if (isset($lname_error)) { ?><span class="text-danger"><?php echo $lname_error; ?></span><?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td>gender</td>
+                <td>
+                    <input type="radio" name="gender" value="Male" <?php if (isset($gender) && $gender == "Male") echo "checked"; ?>> Male
+                    <input type="radio" name="gender" value="Female" <?php if (isset($gender) && $gender == "Female") echo "checked"; ?>> Female
+                    <?php if (isset($gender_error)) { ?><span class="text-danger"><?php echo $gender_error; ?></span><?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Old Password</td>
+                <td>
+                    <input type='password' name='old_password' class='form-control' />
+                    <?php if (isset($old_password_error)) { ?><span class="text-danger"><?php echo $old_password_error; ?></span><?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td>New Password</td>
+                <td>
+                    <input type='password' name='new_password' class='form-control' />
+                    <?php if (isset($new_password_error)) { ?><span class="text-danger"><?php echo $new_password_error; ?></span><?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Confirm Password</td>
+                <td>
+                    <input type='password' name='confirm_password' class='form-control' />
+                    <?php if (isset($confirm_password_error)) { ?><span class="text-danger"><?php echo $confirm_password_error; ?></span><?php } ?>
+                </td>
+            </tr>
 
 
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type='submit' value='Save Changes' class='btn btn-primary' />
-                        <a href='customers_create.php' class='btn btn-danger'>Back to read products</a>
-                    </td>
-                </tr>
-            </table>
-        </form>
+            <tr>
+                <td>date of birth</td>
+                <td><input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
+                    <?php if (isset($dob_error)) { ?><span class="text-danger"><?php echo $dob_error; ?></span><?php } ?></<td>
+
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>
+                    <input type="radio" name="status" value="Active" <?php if (isset($status) && $status == "Active") echo "checked"; ?>> Active
+                    <input type="radio" name="status" value="Inactive" <?php if (isset($status) && $status == "Inactive") echo "checked"; ?>> Inactive
+                    <?php if (isset($status_error)) { ?><span class="text-danger"><?php echo $status_error; ?></span><?php } ?>
+
+
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type='submit' value='Save Changes' class='btn btn-primary' />
+                    <a href='customers_create.php' class='btn btn-danger'>Back to read products</a>
+                </td>
+            </tr>
+        </table>
+    </form>
     </div>
     <!-- end .container -->
 </body>
