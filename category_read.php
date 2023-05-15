@@ -33,6 +33,15 @@
         // include database connection
         include 'config/database.php';
 
+        // get total number of customers
+        $query = "SELECT COUNT(*) as total FROM categories";
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $total_category = $row['total'];
+
+        echo "<h5>Total category: " . $total_category . "</h5>";
+
         // delete message prompt will be here
 
         // select all data

@@ -43,7 +43,7 @@
         // include database connection
         include 'config/database.php';
 
-        // delete message prompt will be here
+
 
         // get total number of products
         $query = "SELECT COUNT(*) as total FROM products";

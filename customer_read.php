@@ -43,7 +43,14 @@
         // include database connection
         include 'config/database.php';
 
-        // delete message prompt will be here
+        // get total number of customers
+        $query = "SELECT COUNT(*) as total FROM customers";
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $total_customers = $row['total'];
+
+        echo "<h5>Total customers: " . $total_customers . "</h5>";
 
         // select all data
         $query = "SELECT * FROM customers";
