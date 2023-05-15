@@ -31,8 +31,8 @@
             </div>
             <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="search" placeholder="Search customer name" aria-label="Search" style="max-width: 300px;">
-                    <button class="btn btn-outline-success" type="submit">Search Order ID</button>
+                    <input class="form-control" type="text" name="search" placeholder="Search Customer name" aria-label="Search" style="max-width: 300px;">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
                 </div>
             </form>
         </div>
@@ -73,7 +73,8 @@
             echo "<th>Action</th>";
             echo "</tr>";
 
-            // table body will be here
+
+
             // retrieve our table contents
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 // extract row
@@ -86,14 +87,6 @@
                 echo "<td>{$customer_name}</td>";
                 echo "<td>";            // read one record
                 echo "<a href='order_detail_read.php?order_id={$order_id}' class='btn btn-info me-2'>Read</a>";
-
-                // we will use these links on the next part of this post
-                echo "<a href='order_update.php?order_id={$order_id}' class='btn btn-primary me-2'>Edit</a>";
-
-                // we will use these links on the next part of this post
-                echo "<a href='#' onclick='delete_order({$order_id});'  class='btn btn-danger'>Delete</a>";
-                echo "</td>";
-                echo "</tr>";
             }
 
             // end table
