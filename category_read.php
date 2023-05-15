@@ -81,7 +81,7 @@
                 echo "<a href='category_update.php?category_id={$category_id}' class='btn btn-primary me-2'>Edit</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='category_delete.php' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
+                echo "<a href='#' onclick='delete_user({$category_id});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }
@@ -101,6 +101,17 @@
     </div> <!-- end .container -->
 
     <!-- confirm delete record will be here -->
+    <script>
+        function delete_user(category_id) {
+            var answer = confirm('Are you sure?');
+            if (answer) {
+                // if user clicked ok,
+                // pass the ID to delete.php and execute the delete query
+                window.location = 'category_delete.php?category_id=' + category_id;
+            }
+        }
+    </script>
+
 
 
 </body>

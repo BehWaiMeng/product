@@ -14,17 +14,17 @@
     include 'config/database.php';
 
     try {
-        // Get the record username
-        $username2 = isset($_GET['username']) ? $_GET['username'] : die('ERROR: Record username not found.');
+        // Get the record user category_id
+        $category_dlt = isset($_GET['category_id']) ? $_GET['category_id'] : die('ERROR: Record category_id not found.');
 
         // Delete query
-        $query = "DELETE FROM customers WHERE username = ?";
+        $query = "DELETE FROM categories WHERE category_id = ?";
         $stmt = $con->prepare($query);
-        $stmt->bindParam(1, $username2);
+        $stmt->bindParam(1, $category_dlt);
         if ($stmt->execute()) {
             // Redirect to the Read Customers page and
             // tell the user the record was deleted
-            header('Location: index.php?action=deleted');
+            header('Location: category_read.php?action=deleted');
         } else {
             die('Unable to delete record.');
         }
