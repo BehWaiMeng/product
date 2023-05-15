@@ -91,7 +91,7 @@
                     echo "<td>";
 
                     // read one record/
-                    echo "<a href='order_detail_update.php?order_details_id={$order_details_id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                    echo "<a href='order_detail_update.php?order_details_id={$order_details_id}' class='btn btn-info me-2'>Edit</a>";
 
                     // we will use these links on the next part of this post
                     echo "<a href='#' onclick='delete_order_detail({$order_details_id});'  class='btn btn-danger'>Delete</a>";

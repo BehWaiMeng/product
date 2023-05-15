@@ -33,6 +33,9 @@
         // include database connection
         include 'config/database.php';
 
+        // link to create record form
+        echo "<a href='category_create.php' class='btn btn-primary m-b-1em'>Create New Category</a>";
+
         // get total number of customers
         $query = "SELECT COUNT(*) as total FROM categories";
         $stmt = $con->prepare($query);
@@ -52,8 +55,7 @@
         // this is how to get number of rows returned
         $num = $stmt->rowCount();
 
-        // link to create record form
-        echo "<a href='category_create.php' class='btn btn-primary m-b-1em'>Create New Category</a>";
+
 
         //check if more than 0 record found
         if ($num > 0) {

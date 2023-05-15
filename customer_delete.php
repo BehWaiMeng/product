@@ -24,7 +24,7 @@
         if ($stmt->execute()) {
             // Redirect to the Read Customers page and
             // tell the user the record was deleted
-            header('Location: index.php?action=deleted');
+            header('Location: customer_read.php?action=deleted');
         } else {
             die('Unable to delete record.');
         }

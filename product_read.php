@@ -80,6 +80,7 @@
             echo "<th>Name</th>";
             echo "<th>Description</th>";
             echo "<th>Price</th>";
+            echo "<th>Promotion Price</th>";
             echo "<th>Action</th>";
             echo "</tr>";
 
@@ -95,6 +96,7 @@
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
+                echo "<td class='text-end'>" . number_format($promotion_price, 2) . "</td>";
                 echo "<td>";
 
                 // read one record
