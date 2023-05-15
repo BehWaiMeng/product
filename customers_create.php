@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <!--navbar-->
+
     <?php
     //check if it login or not
     session_start();
