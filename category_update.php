@@ -61,6 +61,8 @@
 
         <!-- check if form was submitted -->
         <?php
+        // ...
+
         if ($_POST) {
             try {
                 // write update query
@@ -74,24 +76,34 @@
                 $category_name = htmlspecialchars(strip_tags($_POST['category_name']));
                 $description = htmlspecialchars(strip_tags($_POST['description']));
 
-                // bind the parameters
-                $stmt->bindParam(':category_name', $category_name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':category_id', $category_id);
+                // Check if category name already exists
+                $checkQuery = "SELECT category_id FROM categories WHERE category_name = :category_name AND category_id != :category_id";
+                $checkStmt = $con->prepare($checkQuery);
+                $checkStmt->bindParam(':category_name', $category_name);
+                $checkStmt->bindParam(':category_id', $category_id);
+                $checkStmt->execute();
 
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
+                if ($checkStmt->rowCount() > 0) {
+                    echo "<div class='alert alert-danger'>Category name already exists.</div>";
                 } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    // bind the parameters
+                    $stmt->bindParam(':category_name', $category_name);
+                    $stmt->bindParam(':description', $description);
+                    $stmt->bindParam(':category_id', $category_id);
+
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    }
                 }
-            }
-            // show errors
-            catch (PDOException $exception) {
+            } catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
             }
         }
         ?>
+
 
         <!-- Moved HTML form outside of the if block -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?category_id={$category_id}"); ?>" method="post">
