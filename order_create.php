@@ -152,18 +152,21 @@
                     </div>
                     <div class="col-5 mb-2">
                         <input type="number" name="quantity[]" class="form-control" min="1" />
+                        <span class="error"><?php echo $quantity_error; ?></span>
                     </div>
                     <div class="col-1 mb-2">
                         <button type="button" class="btn btn-danger remove-product">Remove</button>
                     </div>
+                    <div class="col-6 offset-6">
+                        <span class="error"><?php echo $product_error; ?></span>
+                    </div>
                 </div>
-            </div>
 
+            </div>
             <div class="mb-2">
                 <button type="button" class="btn btn-primary add-product">Add Product</button>
             </div>
-            <span class="error"><?php echo $product_error; ?></span>
-            <span class="error"><?php echo $quantity_error; ?></span>
+
             <br>
 
             <input type="submit" class="btn btn-primary" value="Submit">
