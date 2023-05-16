@@ -36,7 +36,9 @@
         include 'config/database.php';
 
         // Initialize variables
-        $customer_name = $product_ids = $quantities = "";
+        $customer_name = "";
+        $product_ids = [];
+        $quantities = [];
         $customer_name_error = $product_error = $quantity_error = "";
 
         // Get all customer names
@@ -87,7 +89,7 @@
                     $item_count = count($product_ids);
 
                     for ($i = 0; $i < $item_count; $i++) {
-                        if (!empty($product_ids[$i]) && !empty($quantities[$i])) {
+                        if (isset($product_ids[$i]) && isset($quantities[$i]) && !empty($product_ids[$i]) && !empty($quantities[$i])) {
                             // Get the price for the current product
                             $query_price = "SELECT price FROM products WHERE id = :product_id";
                             $stmt_price = $con->prepare($query_price);
@@ -114,7 +116,6 @@
             }
         }
         ?>
-
         <!-- html form here where the product information will be entered -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <div class="row">
@@ -137,66 +138,66 @@
                 </div>
             </div>
 
-            <div class="pRow">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="form-group">
-                            <label class="order-form-label">Product</label>
-                            <select class="form-select" name="product[]" aria-label="form-select-lg example">
-                                <option value="" selected>Choose your product</option>
-                                <?php
-                                $query = "SELECT * FROM products";
-                                $stmtproduct = $con->prepare($query);
-                                $stmtproduct->execute();
+            <div class="product-container">
+                <div class="product-row">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="form-group">
+                                <label class="order-form-label">Product</label>
+                                <select class="form-select" name="product[]" aria-label="form-select-lg example">
+                                    <option value="" selected>Choose your product</option>
+                                    <?php
+                                    $query = "SELECT * FROM products";
+                                    $stmtproduct = $con->prepare($query);
+                                    $stmtproduct->execute();
 
-                                while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
-                                    extract($product_row);
-                                    $selected = (in_array($id, $product_ids)) ? 'selected' : '';
-                                    echo "<option value='$id' $selected>$name</option>";
-                                }
-                                ?>
-                            </select>
-                            <span class="error"><?php echo $product_error; ?></span>
+                                    while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
+                                        extract($product_row);
+                                        $selected = (in_array($id, $product_ids)) ? 'selected' : '';
+                                        echo "<option value='$id' $selected>$name</option>";
+                                    }
+                                    ?>
+                                </select>
+                                <span class="error"><?php echo $product_error; ?></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label class="order-form-label">Quantity</label>
-                            <input type="number" name="quantity[]" class="form-control" min="1" value="<?php echo $quantities[$i]; ?>" />
-                            <span class="error"><?php echo $quantity_error; ?></span>
-                        </div>
-                    </div>
-                    <div class="col-1 align-self-end">
-
-                        <div class="form-group">
-                            <button type="button" class="btn btn-danger remove-product">Remove</button>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="order-form-label">Quantity</label>
+                                <input type="number" name="quantity[]" class="form-control" min="1" value="1" />
+                                <span class="error"><?php echo $quantity_error; ?></span>
+                            </div>
+                            <div class="col-1 align-self-end">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger remove-product">Remove</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 mt-3">
-                <button type="button" class="btn btn-primary add-product">Add Product</button>
-            </div>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <input type='submit' value='Save' class='btn btn-primary' />
-                    <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
+                <div class="col-12 mt-3">
+                    <button type="button" class="btn btn-primary add-product">Add Product</button>
                 </div>
-            </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <input type='submit' value='Save' class='btn btn-primary' />
+                        <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
+                    </div>
+                </div>
         </form>
     </div> <!-- end .container -->
-
     <script>
         document.addEventListener('click', function(event) {
             if (event.target.matches('.add-product')) {
-                var productRow = document.querySelector('.pRow');
+                var productContainer = document.querySelector('.product-container');
+                var productRow = document.querySelector('.product-row');
                 var clone = productRow.cloneNode(true);
-                productRow.parentNode.insertBefore(clone, productRow.nextSibling);
+                productContainer.appendChild(clone);
             }
             if (event.target.matches('.remove-product')) {
-                var productRow = event.target.closest('.pRow');
-                if (document.querySelectorAll('.pRow').length > 1) {
+                var productRow = event.target.closest('.product-row');
+                if (document.querySelectorAll('.product-row').length > 1) {
                     productRow.remove();
                 }
             }
