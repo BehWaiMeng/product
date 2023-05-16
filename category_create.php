@@ -28,26 +28,28 @@
 
         <?php
         if ($_POST) {
-            // include database connection
-            include 'config/database.php';
-
-            // Get all categories
-            $query = "SELECT * FROM categories";
             try {
-                $stmt = $con->prepare($query);
-                $stmt->execute();
-                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-            }
+                // include database connection
+                include 'config/database.php';
 
-            try {
                 // posted values
                 $category_name = htmlspecialchars(strip_tags($_POST['category_name']));
                 $description = htmlspecialchars(strip_tags($_POST['description']));
 
                 if (empty($category_name)) {
                     $category_name_error = "Please fill the category name";
+                } else {
+                    // check if category already exists
+                    $query = "SELECT * FROM categories WHERE category_name = :category_name";
+                    $stmt = $con->prepare($query);
+                    $stmt->bindParam(':category_name', $category_name);
+                    $stmt->execute();
+
+
+                    // Check the category name already exist or not?
+                    if ($stmt->rowCount() > 0) {
+                        $category_name_error = "Category name already exists. Please choose a different name.";
+                    }
                 }
 
                 if (empty($description)) {
@@ -81,6 +83,8 @@
                 die('ERROR: ' . $exception->getMessage());
             }
         }
+
+
         ?>
 
         <!-- html form here where the product information will be entered -->
