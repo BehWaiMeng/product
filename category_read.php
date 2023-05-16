@@ -27,14 +27,23 @@
         <div class="page-header">
             <h1>Read All Categories</h1>
         </div>
-
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a href='category_create.php' class='btn btn-primary m-b-1em'>Create New Category</a>
+            </div>
+            <form class="d-flex justify-content-end" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="search" placeholder="Search Category Name" aria-label="Search" style="max-width: 300px;">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
         <!-- PHP code to read records will be here -->
         <?php
         // include database connection
         include 'config/database.php';
 
-        // link to create record form
-        echo "<a href='category_create.php' class='btn btn-primary m-b-1em'>Create New Category</a>";
+
 
         // get total number of customers
         $query = "SELECT COUNT(*) as total FROM categories";
@@ -47,13 +56,38 @@
 
         // delete message prompt will be here
 
-        // select all data
+
+
+        // Select all data
         $query = "SELECT * FROM categories";
+
+        // Check if search parameter is present in the URL
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $search_term = htmlspecialchars(strip_tags($_GET['search']));
+            $query .= " WHERE category_name LIKE ?";
+        }
+
         $stmt = $con->prepare($query);
+
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $search_term = "%{$search_term}%";
+            $stmt->bindParam(1, $search_term);
+        }
+
         $stmt->execute();
 
-        // this is how to get number of rows returned
+        // This is how to get number of rows returned
         $num = $stmt->rowCount();
+
+        // Check if more than 0 record found
+        if ($num > 0) {
+            // Your code to handle the case when more than 0 record found
+        } else {
+            // Your code to handle the case when no records found
+        }
+
+
+
 
 
 
