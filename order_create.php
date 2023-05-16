@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
     <style>
         .error {
             color: red;
@@ -20,7 +19,7 @@
     if (!isset($_SESSION["user"])) {
         $_SESSION["warning"] = "You must be logged in to access this page.";
         header("Location: login.php");
-        exit; // Terminate script execution after redirect
+        exit;
     }
     include 'navbar.php';
     ?>
@@ -49,7 +48,7 @@
             $customer_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            exit; // Terminate script execution on error
+            exit;
         }
 
         // Handle form submission
@@ -96,8 +95,10 @@
                             $stmt_price->bindParam(':product_id', $product_ids[$i]);
                             $stmt_price->execute();
                             $price = $stmt_price->fetchColumn();
+
                             // Calculate the total price for the current product
                             $total_price = $price * $quantities[$i];
+
                             // Insert the order details
                             $query = "INSERT INTO order_details (order_id, product_id, quantity, per_price, total_price, order_date) VALUES (:order_id, :product_id, :quantity, :per_price, :total_price, NOW())";
                             $stmt = $con->prepare($query);
@@ -116,7 +117,8 @@
             }
         }
         ?>
-        <!-- html form here where the product information will be entered -->
+
+        <!-- HTML form here where the product information will be entered -->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <div class="row">
                 <div class="col-12 mb-2">
@@ -138,7 +140,50 @@
                 </div>
             </div>
 
-            <div class="product-container">
+            <?php
+            if (!empty($product_ids)) {
+                foreach ($product_ids as $index => $product_id) {
+            ?>
+                    <div class="product-row">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label class="order-form-label">Product</label>
+                                    <select class="form-select" name="product[]" aria-label="form-select-lg example">
+                                        <option value="" selected>Choose your product</option>
+                                        <?php
+                                        $query = "SELECT * FROM products";
+                                        $stmtproduct = $con->prepare($query);
+                                        $stmtproduct->execute();
+
+                                        while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
+                                            extract($product_row);
+                                            $selected = ($id == $product_id) ? 'selected' : '';
+                                            echo "<option value='$id' $selected>$name</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                    <span class="error"><?php echo $product_error; ?></span>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="order-form-label">Quantity</label>
+                                    <input type="number" name="quantity[]" class="form-control" min="1" value="<?php echo htmlspecialchars($quantities[$index]); ?>" />
+                                    <span class="error"><?php echo $quantity_error; ?></span>
+                                </div>
+                            </div>
+                            <div class="col-1 align-self-end">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger remove-product">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                }
+            } else {
+                ?>
                 <div class="product-row">
                     <div class="row">
                         <div class="col-8">
@@ -153,40 +198,43 @@
 
                                     while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
                                         extract($product_row);
-                                        $selected = (in_array($id, $product_ids)) ? 'selected' : '';
-                                        echo "<option value='$id' $selected>$name</option>";
+                                        echo "<option value='$id'>$name</option>";
                                     }
                                     ?>
                                 </select>
                                 <span class="error"><?php echo $product_error; ?></span>
                             </div>
                         </div>
-
                         <div class="col-3">
                             <div class="form-group">
                                 <label class="order-form-label">Quantity</label>
                                 <input type="number" name="quantity[]" class="form-control" min="1" value="1" />
                                 <span class="error"><?php echo $quantity_error; ?></span>
                             </div>
-                            <div class="col-1 align-self-end">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-danger remove-product">Remove</button>
-                                </div>
+                        </div>
+                        <div class="col-1 align-self-end">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-danger remove-product">Remove</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 mt-3">
-                    <button type="button" class="btn btn-primary add-product">Add Product</button>
+            <?php
+            }
+            ?>
+
+            <div class="col-12 mt-3">
+                <button type="button" class="btn btn-primary add-product">Add Product</button>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <input type='submit' value='Save' class='btn btn-primary' />
+                    <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
-                    </div>
-                </div>
+            </div>
         </form>
     </div> <!-- end .container -->
+
     <script>
         document.addEventListener('click', function(event) {
             if (event.target.matches('.add-product')) {
