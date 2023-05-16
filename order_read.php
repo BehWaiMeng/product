@@ -17,9 +17,11 @@
         header("Location: login.php");
     }
 
+
     include 'navbar.php'; ?>
 
     <!-- container -->
+
     <div class="container">
         <div class="page-header">
             <h1>Read Orders</h1>
@@ -39,6 +41,11 @@
 
         <!-- PHP code to read records will be here -->
         <?php
+        //if create order success show success
+        if (isset($_SESSION["success"])) {
+            echo '<div class="alert alert-success">' . $_SESSION["success"] . '</div>';
+            unset($_SESSION["success"]);
+        }
         // include database connection
         include 'config/database.php';
 

@@ -51,6 +51,23 @@
             exit;
         }
 
+        // Get all product IDs and names
+        $query = "SELECT id, name FROM products";
+        try {
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            $products = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            exit;
+        }
+
+        // Generate product options HTML
+        $productOptionsHTML = '<option value="">-- Select Product --</option>';
+        foreach ($products as $product) {
+            $productOptionsHTML .= '<option value="' . $product['id'] . '">' . $product['name'] . '</option>';
+        }
+
         // Handle form submission
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $customer_name = $_POST['customer_name'];
@@ -77,179 +94,109 @@
             if (empty($customer_name_error) && empty($product_error) && empty($quantity_error)) {
                 // Insert order data into the orders table
                 $query = "INSERT INTO orders (customer_name, order_date) VALUES (:customer_name, NOW())";
-
                 $stmt = $con->prepare($query);
-                $stmt->bindParam(':customer_name', $customer_name);
+                $stmt->bindParam(":customer_name", $customer_name);
 
-                if ($stmt->execute()) {
+                try {
+                    $con->beginTransaction();
+                    $stmt->execute();
                     $order_id = $con->lastInsertId();
 
-                    // Insert order details into the order_details table
-                    $item_count = count($product_ids);
+                    // Insert order details data into the order_details table
+                    $query = "INSERT INTO order_details (order_id, product_id, quantity) VALUES (:order_id, :product_id, :quantity)";
+                    $stmt = $con->prepare($query);
+                    $stmt->bindParam(":order_id", $order_id);
 
-                    for ($i = 0; $i < $item_count; $i++) {
-                        if (isset($product_ids[$i]) && isset($quantities[$i]) && !empty($product_ids[$i]) && !empty($quantities[$i])) {
-                            // Get the price for the current product
-                            $query_price = "SELECT price FROM products WHERE id = :product_id";
-                            $stmt_price = $con->prepare($query_price);
-                            $stmt_price->bindParam(':product_id', $product_ids[$i]);
-                            $stmt_price->execute();
-                            $price = $stmt_price->fetchColumn();
-
-                            // Calculate the total price for the current product
-                            $total_price = $price * $quantities[$i];
-
-                            // Insert the order details
-                            $query = "INSERT INTO order_details (order_id, product_id, quantity, per_price, total_price, order_date) VALUES (:order_id, :product_id, :quantity, :per_price, :total_price, NOW())";
-                            $stmt = $con->prepare($query);
-                            $stmt->bindParam(':order_id', $order_id);
-                            $stmt->bindParam(':product_id', $product_ids[$i]);
-                            $stmt->bindParam(':quantity', $quantities[$i]);
-                            $stmt->bindParam(':per_price', $price);
-                            $stmt->bindParam(':total_price', $total_price);
+                    foreach ($product_ids as $index => $product_id) {
+                        if (!empty($product_id) && !empty($quantities[$index])) {
+                            $stmt->bindParam(":product_id", $product_id);
+                            $stmt->bindParam(":quantity", $quantities[$index]);
                             $stmt->execute();
                         }
                     }
-                    echo "<div class='alert alert-success'>Record was saved successfully.</div>";
-                } else {
-                    echo "<div class='alert alert-danger'>Failed to save record. Please try again.</div>";
+
+                    $con->commit();
+                    // Set a session variable to show a success message
+                    $_SESSION["success"] = "Order successfully created.";
+
+                    header("Location: order_read.php");
+                } catch (PDOException $e) {
+                    $con->rollBack();
+                    echo "Error: " . $e->getMessage();
                 }
             }
         }
         ?>
 
-        <!-- HTML form here where the product information will be entered -->
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-            <div class="row">
-                <div class="col-12 mb-2">
-                    <label class="order-form-label">Username</label>
-                </div>
-                <div class="col-12 mb-2">
-                    <select name="customer_name" class="form-control">
-                        <option value="">-- Select Customer --</option>
-                        <?php
-                        if (!empty($customer_names)) {
-                            foreach ($customer_names as $username) {
-                                $selected = ($username == $customer_name) ? 'selected' : '';
-                                echo "<option value='$username' $selected>$username</option>";
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span class="error"><?php echo $customer_name_error; ?></span>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <div class="form-group">
+                <label>Username</label>
+                <select name="customer_name" class="form-control">
+                    <option value="">-- Select Username --</option>
+                    <?php foreach ($customer_names as $name) : ?>
+                        <option value="<?php echo $name; ?>" <?php if ($customer_name == $name) echo "selected"; ?>>
+                            <?php echo $name; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <span class="error"><?php echo $customer_name_error; ?></span>
+            </div>
+            <br>
+
+            <div class="products-container">
+                <div class="row product-row">
+                    <div class="col-6 mb-2">
+                        <select name="product[]" class="form-control">
+                            <?php echo $productOptionsHTML; ?>
+                        </select>
+                    </div>
+                    <div class="col-5 mb-2">
+                        <input type="number" name="quantity[]" class="form-control" min="1" />
+                    </div>
+                    <div class="col-1 mb-2">
+                        <button type="button" class="btn btn-danger remove-product">Remove</button>
+                    </div>
                 </div>
             </div>
 
-            <?php
-            if (!empty($product_ids)) {
-                foreach ($product_ids as $index => $product_id) {
-            ?>
-                    <div class="product-row">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="form-group">
-                                    <label class="order-form-label">Product</label>
-                                    <select class="form-select" name="product[]" aria-label="form-select-lg example">
-                                        <option value="" selected>Choose your product</option>
-                                        <?php
-                                        $query = "SELECT * FROM products";
-                                        $stmtproduct = $con->prepare($query);
-                                        $stmtproduct->execute();
-
-                                        while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
-                                            extract($product_row);
-                                            $selected = ($id == $product_id) ? 'selected' : '';
-                                            echo "<option value='$id' $selected>$name</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                    <span class="error"><?php echo $product_error; ?></span>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <label class="order-form-label">Quantity</label>
-                                    <input type="number" name="quantity[]" class="form-control" min="1" value="<?php echo htmlspecialchars($quantities[$index]); ?>" />
-                                    <span class="error"><?php echo $quantity_error; ?></span>
-                                </div>
-                            </div>
-                            <div class="col-1 align-self-end">
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-danger remove-product">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php
-                }
-            } else {
-                ?>
-                <div class="product-row">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="form-group">
-                                <label class="order-form-label">Product</label>
-                                <select class="form-select" name="product[]" aria-label="form-select-lg example">
-                                    <option value="" selected>Choose your product</option>
-                                    <?php
-                                    $query = "SELECT * FROM products";
-                                    $stmtproduct = $con->prepare($query);
-                                    $stmtproduct->execute();
-
-                                    while ($product_row = $stmtproduct->fetch(PDO::FETCH_ASSOC)) {
-                                        extract($product_row);
-                                        echo "<option value='$id'>$name</option>";
-                                    }
-                                    ?>
-                                </select>
-                                <span class="error"><?php echo $product_error; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label class="order-form-label">Quantity</label>
-                                <input type="number" name="quantity[]" class="form-control" min="1" value="1" />
-                                <span class="error"><?php echo $quantity_error; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-1 align-self-end">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-danger remove-product">Remove</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php
-            }
-            ?>
-
-            <div class="col-12 mt-3">
+            <div class="mb-2">
                 <button type="button" class="btn btn-primary add-product">Add Product</button>
             </div>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <input type='submit' value='Save' class='btn btn-primary' />
-                    <a href='order_read.php' class='btn btn-danger'>Back to read orders</a>
-                </div>
-            </div>
-        </form>
-    </div> <!-- end .container -->
+            <span class="error"><?php echo $product_error; ?></span>
+            <span class="error"><?php echo $quantity_error; ?></span>
+            <br>
 
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-8HDXGMoFQHw1VUZk9B6JmdA9+UZjDPZcFtc3n4T8bqBZ1k8BsIDm1yp5Ee1mbvne" crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('click', function(event) {
-            if (event.target.matches('.add-product')) {
-                var productContainer = document.querySelector('.product-container');
-                var productRow = document.querySelector('.product-row');
-                var clone = productRow.cloneNode(true);
-                productContainer.appendChild(clone);
-            }
-            if (event.target.matches('.remove-product')) {
-                var productRow = event.target.closest('.product-row');
-                if (document.querySelectorAll('.product-row').length > 1) {
-                    productRow.remove();
-                }
-            }
-        }, false);
+        $(document).ready(function() {
+            const productOptionsHTML = '<?php echo $productOptionsHTML; ?>';
+
+            const productRowHTML = `
+<div class="row product-row">
+<div class="col-6 mb-2">
+<select name="product[]" class="form-control">${productOptionsHTML}</select>
+</div>
+<div class="col-5 mb-2">
+<input type="number" name="quantity[]" class="form-control" min="1" />
+</div>
+<div class="col-1 mb-2">
+<button type="button" class="btn btn-danger remove-product">Remove</button>
+</div>
+</div>
+`
+            $('.add-product').click(function() {
+                $('.products-container').append(productRowHTML);
+            });
+
+            $('body').on('click', '.remove-product', function() {
+                $(this).closest('.product-row').remove();
+            });
+        });
     </script>
 </body>
 
