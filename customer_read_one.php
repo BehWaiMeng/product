@@ -63,7 +63,6 @@
             }
             // values to fill up our form
             $username1 = $row['username'];
-
             $fname = $row['fname'];
             $lname = $row['lname'];
             $gender = $row['gender'];

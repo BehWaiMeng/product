@@ -86,30 +86,40 @@
 
             // table body will be here
             // retrieve our table contents
+            // retrieve our table contents
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 // extract row
                 // this will make $row['firstname'] to just $firstname only
                 extract($row);
+
                 // creating new table row per record
                 echo "<tr>";
                 echo "<td>{$id}</td>";
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
                 echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
-                echo "<td class='text-end'>" . number_format($promotion_price, 2) . "</td>";
-                echo "<td>";
 
+                // check if promotion price is 0, if so show dash else show the promotion price
+                echo "<td class='text-end'>";
+                if ($promotion_price == 0) {
+                    echo "-";
+                } else {
+                    echo number_format($promotion_price, 2);
+                }
+                echo "</td>";
+
+                echo "<td>";
                 // read one record
                 echo "<a href='product_read_one.php?id={$id}' class='btn btn-info me-2'>Read</a>";
-
                 // we will use this links on next part of this post
                 echo "<a href='product_update.php?id={$id}' class='btn btn-primary me-2'>Edit</a>";
-
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
                 echo "</td>";
                 echo "</tr>";
             }
+
+
 
             // end table
             echo "</table>";
