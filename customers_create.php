@@ -28,6 +28,16 @@
             <h1>Create Customers</h1>
         </div>
         <?php
+        // Define error variables
+        $usernameError = "";
+        $passwordError = "";
+        $confirmPasswordError = "";
+        $fnameError = "";
+        $lnameError = "";
+        $genderError = "";
+        $dobError = "";
+        $statusError = "";
+
         if ($_POST) {
             // Include database connection
             include 'config/database.php';
@@ -44,49 +54,55 @@
                 $status = $_POST['status'] ?? '';
 
                 // Validate form input
-                $errors = array();
-
                 if (empty($username)) {
-                    $errors[] = "Please enter a username.";
+                    $usernameError = "Please enter a username.";
                 } elseif (strlen($username) < 6) {
-                    $errors[] = "The username must be at least 6 characters.";
+                    $usernameError = "The username must be at least 6 characters.";
                 } elseif (strpos($username, ' ') !== false) {
-                    $errors[] = "The username cannot contain spaces.";
+                    $usernameError = "The username cannot contain spaces.";
                 }
 
                 if (empty($password)) {
-                    $errors[] = "Please enter a password.";
+                    $passwordError = "Please enter a password.";
                 } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $password) || preg_match('/\s/', $password)) {
-                    $errors[] = "The password must contain at least 6 characters with at least 1 number and 1 letter, and should not contain spaces.";
+                    $passwordError = "The password must contain at least 6 characters with at least 1 number and 1 letter, and should not contain spaces.";
                 } elseif (empty($confirmpassword)) {
-                    $errors[] = "Please enter the confirm password.";
+                    $confirmPasswordError = "Please enter the confirm password.";
                 } elseif ($password !== $confirmpassword) {
-                    $errors[] = "The password and confirm password do not match.";
+                    $confirmPasswordError = "The password and confirm password do not match.";
                 }
 
                 if (empty($fname)) {
-                    $errors[] = "Please enter the first name.";
+                    $fnameError = "Please enter the first name.";
                 }
 
                 if (empty($lname)) {
-                    $errors[] = "Please enter the last name.";
+                    $lnameError = "Please enter the last name.";
                 }
 
                 if (empty($gender)) {
-                    $errors[] = "Please select a gender.";
+                    $genderError = "Please select a gender.";
                 } elseif ($gender !== 'Male' && $gender !== 'Female') {
-                    $errors[] = "Invalid gender value.";
+                    $genderError = "Invalid gender value.";
                 }
 
                 if (empty($dob)) {
-                    $errors[] = "Please enter the date of birth.";
+                    $dobError = "Please enter the date of birth.";
+                } elseif (strtotime($dob) > time()) {
+                    $dobError = "Date of birth cannot be in the future.";
                 }
 
                 if (empty($status)) {
-                    $errors[] = "Please select a status.";
+                    $statusError = "Please select a status.";
                 }
 
-                if (empty($errors)) {
+                // If there are no errors, proceed with database insert
+                if (
+                    empty($usernameError) && empty($passwordError) &&
+                    empty($confirmPasswordError) && empty($fnameError) &&
+                    empty($lnameError) && empty($genderError) &&
+                    empty($dobError) && empty($statusError)
+                ) {
                     // Hash the password
                     $hashedPassword = md5($password);
 
@@ -116,10 +132,6 @@
                     } else {
                         echo "<div class='alert alert-danger'>Unable to save record.</div>";
                     }
-                } else {
-                    foreach ($errors as $error) {
-                        echo "<div class='alert alert-danger'>$error</div>";
-                    }
                 }
             } catch (PDOException $exception) {
                 die('ERROR: ' . $exception->getMessage());
@@ -133,30 +145,35 @@
                     <td>Username</td>
                     <td>
                         <input type='text' name='username' class='form-control' value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>" />
+                        <div class="text-danger"><?php echo $usernameError; ?></div>
                     </td>
                 </tr>
                 <tr>
                     <td>Password</td>
                     <td>
                         <input type='password' name='password' class='form-control' value="<?php echo isset($password) ? htmlspecialchars($password) : ''; ?>" />
+                        <div class="text-danger"><?php echo $passwordError; ?></div>
                     </td>
                 </tr>
                 <tr>
                     <td>Confirm Password</td>
                     <td>
                         <input type='password' name='confirmpassword' class='form-control' value="<?php echo isset($confirmpassword) ? htmlspecialchars($confirmpassword) : ''; ?>" />
+                        <div class="text-danger"><?php echo $confirmPasswordError; ?></div>
                     </td>
                 </tr>
                 <tr>
                     <td>First Name</td>
                     <td>
                         <input type='text' name='fname' class='form-control' value="<?php echo isset($fname) ? htmlspecialchars($fname) : ''; ?>" />
+                        <div class="text-danger"><?php echo $fnameError; ?></div>
                     </td>
                 </tr>
                 <tr>
                     <td>Last Name</td>
                     <td>
                         <input type='text' name='lname' class='form-control' value="<?php echo isset($lname) ? htmlspecialchars($lname) : ''; ?>" />
+                        <div class="text-danger"><?php echo $lnameError; ?></div>
                     </td>
                 </tr>
                 <tr>
@@ -164,12 +181,14 @@
                     <td>
                         <input type="radio" name="gender" value="Male" <?php if (isset($gender) && $gender == "Male") echo "checked"; ?>> Male
                         <input type="radio" name="gender" value="Female" <?php if (isset($gender) && $gender == "Female") echo "checked"; ?>> Female
+                        <div class="text-danger"><?php echo $genderError; ?></div>
                     </td>
                 </tr>
                 <tr>
                     <td>Date of Birth</td>
                     <td>
                         <input type='date' name='dob' class='form-control' value="<?php echo isset($dob) ? htmlspecialchars($dob) : ''; ?>" />
+                        <div class="text-danger"><?php echo $dobError; ?></div>
                     </td>
                 </tr>
                 <tr>
@@ -177,6 +196,7 @@
                     <td>
                         <input type="radio" name="status" value="Active" <?php if (isset($status) && $status == "Active") echo "checked"; ?>> Active
                         <input type="radio" name="status" value="Inactive" <?php if (isset($status) && $status == "Inactive") echo "checked"; ?>> Inactive
+                        <div class="text-danger"><?php echo $statusError; ?></div>
                     </td>
                 </tr>
                 <tr>
@@ -190,7 +210,6 @@
         </form>
     </div>
     <!-- end .container -->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>
 
