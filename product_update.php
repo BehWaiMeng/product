@@ -45,7 +45,7 @@
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, name, description, price, promotion_price FROM products WHERE id = ? LIMIT 0,1";
+            $query = "SELECT id, name, description, price, promotion_price, manufacture_date, expired_date FROM products WHERE id = ? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this is the first question mark
@@ -62,20 +62,21 @@
             $description = $row['description'];
             $price = $row['price'];
             $promotion_price = $row['promotion_price'];
+            $manufacture_date = $row['manufacture_date'];
+            $expired_date = $row['expired_date'];
         }
         // show error
         catch (PDOException $exception) {
             die('ERROR: ' . $exception->getMessage());
         }
         ?>
-
         <?php
         if ($_POST) {
             try {
                 // write update query
                 $query = "UPDATE products 
-                      SET name=:name, description=:description, price=:price, promotion_price=:promotion_price 
-                      WHERE id = :id";
+                  SET name=:name, description=:description, price=:price, promotion_price=:promotion_price , manufacture_date=:manufacture_date, expired_date=:expired_date
+                  WHERE id = :id";
 
                 // prepare query for execution
                 $stmt = $con->prepare($query);
@@ -85,19 +86,28 @@
                 $description = htmlspecialchars(strip_tags($_POST['description']));
                 $price = htmlspecialchars(strip_tags($_POST['price']));
                 $promotion_price = htmlspecialchars(strip_tags($_POST['promotion_price']));
+                $manufacture_date = htmlspecialchars(strip_tags($_POST['manufacture_date']));
+                $expired_date = htmlspecialchars(strip_tags($_POST['expired_date']));
 
-                // bind the parameters
-                $stmt->bindParam(':name', $name);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':price', $price);
-                $stmt->bindParam(':promotion_price', $promotion_price);
-                $stmt->bindParam(':id', $id);
+                // Check if Expired_date is earlier than Manufacture_date
+                if ($expired_date < $manufacture_date) {
+                    echo "<div class='alert alert-danger'>Expired date cannot be earlier than the Manufacture date.</div>";
+                } else { // Added the missing curly brace here
+                    // bind the parameters
+                    $stmt->bindParam(':name', $name);
+                    $stmt->bindParam(':description', $description);
+                    $stmt->bindParam(':price', $price);
+                    $stmt->bindParam(':promotion_price', $promotion_price);
+                    $stmt->bindParam(':manufacture_date', $manufacture_date);
+                    $stmt->bindParam(':expired_date', $expired_date);
+                    $stmt->bindParam(':id', $id);
 
-                // Execute the query
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Record was updated.</div>";
-                } else {
-                    echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "<div class='alert alert-success'>Record was updated.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger'>Unable to update record. Please try again.</div>";
+                    }
                 }
             }
             // show errors
@@ -125,6 +135,14 @@
                 <tr>
                     <td>Promotion Price</td>
                     <td><input type='text' name='promotion_price' value="<?php echo htmlspecialchars($promotion_price, ENT_QUOTES);  ?>" class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>Manufacture_date</td>
+                    <td><input type='date' name='manufacture_date' value="<?php echo htmlspecialchars($manufacture_date, ENT_QUOTES);  ?>" class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>Expired_date</td>
+                    <td><input type='date' name='expired_date' value="<?php echo htmlspecialchars($expired_date, ENT_QUOTES);  ?>" class='form-control' /></td>
                 </tr>
                 <tr>
                     <td></td>
