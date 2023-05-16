@@ -63,7 +63,7 @@
                 echo "<th>Order ID</th>";
                 echo "<th>Product ID</th>";
                 echo "<th>Quantity</th>";
-                echo "<th>Price</th>"; // Add price column
+                echo "<th>Per price</th>"; // Add price column
                 echo "<th>Total Price</th>"; // Add total price column
                 echo "<th>Action</th>";
                 echo "</tr>";
@@ -89,15 +89,13 @@
                     echo "<td class='text-end'>{$price}</td>"; // Add text-end class to align the price to the right
                     echo "<td class='text-end'>{$total_price}</td>"; // Add text-end class to align the total price to the right
                     echo "<td>";
-
-                    // read one record/
-                    echo "<a href='order_detail_update.php?order_details_id={$order_details_id}' class='btn btn-info me-2'>Edit</a>";
-
-                    // we will use these links on the next part of this post
-                    echo "<a href='#' onclick='delete_order_detail({$order_details_id});'  class='btn btn-danger'>Delete</a>";
-                    echo "</td>";
-                    echo "</tr>";
                 }
+                //back to read 
+                echo "<a href='order_read.php' class='btn btn-primary'>Back to read order</a>";
+                echo "</td>";
+                echo "</tr>";
+
+
 
                 // Display the total price for all products
                 echo "<tr>";
@@ -105,6 +103,8 @@
                 echo "<td class='text-end'>{$total}</td>"; // Add text-end class to align the overall total price to the right
                 echo "<td></td>";
                 echo "</tr>";
+
+
                 // end table
                 echo "</table>";
             }

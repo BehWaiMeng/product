@@ -23,12 +23,16 @@
             margin-top: 0;
         }
     </style>
+
+    <?php
+    include 'navbar.php';
+    ?>
 </head>
 
 <body>
     <?php
 
-    include 'navbar.php';
+
 
     echo '<div class="container">
     <div class="page-header">
@@ -110,7 +114,7 @@
                 }
 
                 if ($old_password ==  md5($new_password)) {
-                    $new_password_error = "balablab";
+                    $new_password_error = "The new password and new password cannot be the same";
                 }
 
                 // Check if new_password and confirm_password match

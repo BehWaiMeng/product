@@ -79,7 +79,7 @@
     <main>
         <div class="jumbotron">
             <div class="container">
-                <h1 class="display-4">Welcome!</h1>
+                <h1 class="display-4">bwm.team</h1>
             </div>
         </div>
         <div class="container">
