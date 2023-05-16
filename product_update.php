@@ -75,7 +75,7 @@
             try {
                 // write update query
                 $query = "UPDATE products 
-                  SET name=:name, description=:description, price=:price, promotion_price=:promotion_price , manufacture_date=:manufacture_date, expired_date=:expired_date
+                  SET name=:name, description=:description, price=:price, promotion_price=:promotion_price, manufacture_date=:manufacture_date, expired_date=:expired_date
                   WHERE id = :id";
 
                 // prepare query for execution
@@ -90,9 +90,11 @@
                 $expired_date = htmlspecialchars(strip_tags($_POST['expired_date']));
 
                 // Check if Expired_date is earlier than Manufacture_date
-                if ($expired_date < $manufacture_date) {
+                if (!empty($expired_date) && $expired_date < $manufacture_date) {
                     echo "<div class='alert alert-danger'>Expired date cannot be earlier than the Manufacture date.</div>";
-                } else { // Added the missing curly brace here
+                } elseif ($promotion_price > $price) {
+                    echo "<div class='alert alert-danger'>Promotion price cannot be higher than the regular price.</div>";
+                } else {
                     // bind the parameters
                     $stmt->bindParam(':name', $name);
                     $stmt->bindParam(':description', $description);
@@ -116,6 +118,7 @@
             }
         }
         ?>
+
 
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id={$id}"); ?>" method="post">
