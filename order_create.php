@@ -171,30 +171,20 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-8HDXGMoFQHw1VUZk9B6JmdA9+UZjDPZcFtc3n4T8bqBZ1k8BsIDm1yp5Ee1mbvne" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-Ek1M5aJFw3zkf2VJM5anAHIbZ9MlZJ3gZGdr2w+3e3yl4+BXyC6SfVEo0X6Mmqz7" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            const productOptionsHTML = '<?php echo $productOptionsHTML; ?>';
-
-            const productRowHTML = `
-<div class="row product-row">
-<div class="col-6 mb-2">
-<select name="product[]" class="form-control">${productOptionsHTML}</select>
-</div>
-<div class="col-5 mb-2">
-<input type="number" name="quantity[]" class="form-control" min="1" />
-</div>
-<div class="col-1 mb-2">
-<button type="button" class="btn btn-danger remove-product">Remove</button>
-</div>
-</div>
-`
-            $('.add-product').click(function() {
-                $('.products-container').append(productRowHTML);
+            $('.add-product').on('click', function() {
+                let productRow = $('.product-row').first().clone();
+                productRow.find('input').val('');
+                productRow.find('select').val('');
+                $('.products-container').append(productRow);
             });
 
-            $('body').on('click', '.remove-product', function() {
-                $(this).closest('.product-row').remove();
+            $('.products-container').on('click', '.remove-product', function() {
+                if ($('.product-row').length > 1) {
+                    $(this).closest('.product-row').remove();
+                }
             });
         });
     </script>
