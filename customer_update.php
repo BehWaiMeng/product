@@ -235,7 +235,7 @@
                 <td></td>
                 <td>
                     <input type='submit' value='Save Changes' class='btn btn-primary' />
-                    <a href='customers_create.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='customers_create.php' class='btn btn-danger'>Back to read customers</a>
                 </td>
             </tr>
         </table>
