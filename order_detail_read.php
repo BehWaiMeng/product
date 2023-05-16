@@ -17,7 +17,8 @@
         header("Location: login.php");
     }
 
-    include 'navbar.php'; ?>
+    include 'navbar.php';
+    ?>
 
     <!-- container -->
     <div class="container">
@@ -31,7 +32,6 @@
             </div>
         </div>
 
-        <!-- PHP code to read records will be here -->
         <?php
         // include database connection
         include 'config/database.php';
@@ -41,7 +41,6 @@
         // check if order_id is present in the URL
         if (isset($_GET['order_id']) && !empty($_GET['order_id'])) {
             $order_id = htmlspecialchars(strip_tags($_GET['order_id']));
-
 
             // select all data
             $query = "SELECT od.order_details_id, od.order_id, od.product_id, od.quantity, p.price, o.customer_name, o.order_date FROM `order_details` od INNER JOIN `products` p ON od.product_id = p.id INNER JOIN `orders` o ON od.order_id = o.order_id WHERE od.order_id = :order_id";
@@ -53,29 +52,34 @@
             // this is how to get the number of rows returned
             $num = $stmt->rowCount();
 
-            //check if more than 0 record found
+            // check if more than 0 record found
             if ($num > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // data from the database will be here
-                echo "<table class='table table-hover table-responsive table-bordered'>"; //start table
+                // extract row
+                extract($row);
 
-                //creating our table heading
+                // Display order date and customer name
+                echo "<div class='row mb-3'>";
+                echo "<div class='col-6'><strong>Order Date:</strong> {$order_date}</div>";
+                echo "<div class='col-6'><strong>Customer Name:</strong> {$customer_name}</div>";
+                echo "</div>";
+
+                // Start table
+                echo "<table class='table table-hover table-responsive table-bordered'>";
                 echo "<tr>";
                 echo "<th>Order ID</th>";
                 echo "<th>Product ID</th>";
                 echo "<th>Quantity</th>";
                 echo "<th>Per price</th>"; // Add price column
                 echo "<th>Total Price</th>"; // Add total price column
-                echo "<th>Customer name</th>";
-                echo "<th>Order date</th>";
-
                 echo "<th>Action</th>";
                 echo "</tr>";
 
                 $total = 0; // Declare a variable to store the total price for all products
 
-                // retrieve our table contents
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                //Retrieve our table contents
+                do {
                     // extract row
                     extract($row);
 
@@ -87,36 +91,27 @@
 
                     // Creating new table row per record
                     echo "<tr>";
-                    echo "<td>{$order_id}</td>"; // Corrected: added missing double-quote
+                    echo "<td>{$order_id}</td>";
                     echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
                     echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
-
                     echo "<td class='text-end'>" . number_format($total_price, 2) . "</td>";
-                    echo "<td class='text-end'>{$customer_name}</td>";
-                    echo "<td>{$order_date}</td>";
                     echo "<td>";
                     echo "<a href='order_read.php' class='btn btn-primary'>Back to read order</a>";
                     echo "</td>";
                     echo "</tr>";
-                }
-
-
-
+                } while ($row = $stmt->fetch(PDO::FETCH_ASSOC));
 
                 // Display the total price for all products
                 echo "<tr>";
-                echo "<td colspan='4' class='text-end'><strong>Total Price:</strong></td>"; // colspan updated to 4
-                echo "<td class='text-end'>" . number_format($total, 2) . "</td>"; // Modified line
+                echo "<td colspan='4' class='text-end'><strong>Total Price:</strong></td>";
+                echo "<td class='text-end'>" . number_format($total, 2) . "</td>";
                 echo "<td></td>";
                 echo "</tr>";
 
-
-                // end table
+                // End table
                 echo "</table>";
-            }
-            // if no records found
-            else {
+            } else {
                 echo "<div class='alert alert-danger'>No records found.</div>";
             }
         } else {
