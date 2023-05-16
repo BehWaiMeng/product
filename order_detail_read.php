@@ -42,8 +42,9 @@
         if (isset($_GET['order_id']) && !empty($_GET['order_id'])) {
             $order_id = htmlspecialchars(strip_tags($_GET['order_id']));
 
+
             // select all data
-            $query = "SELECT od.order_details_id, od.order_id, od.product_id, od.quantity, p.price FROM `order_details` od INNER JOIN `products` p ON od.product_id = p.id WHERE order_id = :order_id";
+            $query = "SELECT od.order_details_id, od.order_id, od.product_id, od.quantity, p.price, o.customer_name, o.order_date FROM `order_details` od INNER JOIN `products` p ON od.product_id = p.id INNER JOIN `orders` o ON od.order_id = o.order_id WHERE od.order_id = :order_id";
 
             $stmt = $con->prepare($query);
             $stmt->bindParam(':order_id', $order_id);
@@ -65,6 +66,9 @@
                 echo "<th>Quantity</th>";
                 echo "<th>Per price</th>"; // Add price column
                 echo "<th>Total Price</th>"; // Add total price column
+                echo "<th>Customer name</th>";
+                echo "<th>Order date</th>";
+
                 echo "<th>Action</th>";
                 echo "</tr>";
 
@@ -81,26 +85,29 @@
                     // Add the total price of the current product to the total
                     $total += $total_price;
 
-                    // creating new table row per record
+                    // Creating new table row per record
                     echo "<tr>";
                     echo "<td>{$order_id}</td>"; // Corrected: added missing double-quote
                     echo "<td>{$product_id}</td>";
                     echo "<td>{$quantity}</td>";
-                    echo "<td class='text-end'>{$price}</td>"; // Add text-end class to align the price to the right
-                    echo "<td class='text-end'>{$total_price}</td>"; // Add text-end class to align the total price to the right
+                    echo "<td class='text-end'>" . number_format($price, 2) . "</td>";
+
+                    echo "<td class='text-end'>" . number_format($total_price, 2) . "</td>";
+                    echo "<td class='text-end'>{$customer_name}</td>";
+                    echo "<td>{$order_date}</td>";
                     echo "<td>";
+                    echo "<a href='order_read.php' class='btn btn-primary'>Back to read order</a>";
+                    echo "</td>";
+                    echo "</tr>";
                 }
-                //back to read 
-                echo "<a href='order_read.php' class='btn btn-primary'>Back to read order</a>";
-                echo "</td>";
-                echo "</tr>";
+
 
 
 
                 // Display the total price for all products
                 echo "<tr>";
                 echo "<td colspan='4' class='text-end'><strong>Total Price:</strong></td>"; // colspan updated to 4
-                echo "<td class='text-end'>{$total}</td>"; // Add text-end class to align the overall total price to the right
+                echo "<td class='text-end'>" . number_format($total, 2) . "</td>"; // Modified line
                 echo "<td></td>";
                 echo "</tr>";
 
